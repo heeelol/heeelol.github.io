@@ -95,8 +95,10 @@ body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;b
 
 /* figures + gallery */
 figure.frame{margin:2.2rem auto;max-width:900px}
-figure.frame img{width:100%;border:3px solid var(--white);box-shadow:12px 12px 0 var(--red)}
+figure.frame img,figure.frame video{width:100%;border:3px solid var(--white);box-shadow:12px 12px 0 var(--red);display:block;background:#000}
 figure.frame.tilt img{transform:rotate(-1deg)}
+figcaption a{color:var(--red-bright);text-decoration:none;font-family:var(--impact)}
+figcaption a:hover{color:var(--white)}
 figcaption{font-family:var(--impact);font-size:11px;letter-spacing:.07em;color:var(--grey);margin-top:.9rem;text-transform:uppercase}
 .gallery{max-width:1000px;margin:2.2rem auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;padding:0 1.4rem}
 .gallery figure{margin:0}
