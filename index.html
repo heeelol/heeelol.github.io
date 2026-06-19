@@ -3,1302 +3,1235 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Yap Jia Wei — Portfolio Quest</title>
+<title>YAP JIA WEI // TAKE YOUR TIME</title>
+<meta name="description" content="Yap Jia Wei — Computer Engineering @ NUS. Full-stack & ML developer. Persona-styled portfolio."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Oswald:wght@300;400;500;600;700&family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,600;1,700;1,800&family=Shippori+Mincho:wght@600;700;800&display=swap" rel="stylesheet"/>
 <style>
-/* ─── RESET & BASE ─────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════
+   PERSONA 5 — RESET & TOKENS
+═══════════════════════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --void:#0F0F1A;
-  --floor:#1A1A2E;
-  --wall:#16213E;
-  --crimson:#E94560;
-  --blue:#0F3460;
-  --gold:#FFD700;
-  --green:#57FF8C;
-  --white:#E8E8F0;
-  --muted:#8888AA;
-  --pixel: 'Press Start 2P', monospace;
-  --term: 'VT323', monospace;
+  --black:#0A0A0A;
+  --ink:#111014;
+  --red:#E60012;
+  --red-bright:#FF1430;
+  --red-deep:#9E0009;
+  --white:#F4F1E9;
+  --paper:#EDE8DC;
+  --grey:#7A7A82;
+
+  --display:'Anton',sans-serif;
+  --impact:'Archivo Black',sans-serif;
+  --cond:'Barlow Condensed',sans-serif;
+  --sans:'Oswald',sans-serif;
+  --jp:'Shippori Mincho',serif;
 }
 html{scroll-behavior:smooth;overflow-x:hidden}
 body{
-  background:var(--void);
+  background:var(--black);
   color:var(--white);
-  font-family:var(--term);
+  font-family:var(--sans);
   font-size:18px;
   line-height:1.6;
-  cursor:default;
+  overflow-x:hidden;
+  cursor:none;
 }
-::selection{background:var(--crimson);color:#fff}
+img{max-width:100%;display:block}
+::selection{background:var(--red);color:#fff}
 
-/* ─── SCANLINES OVERLAY ─────────────────────────────────────── */
+/* halftone + speedline atmosphere on the whole page */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(230,0,18,0.10) 0%, transparent 60%),
+    radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1.4px) 0 0/16px 16px,
+    repeating-linear-gradient(115deg, rgba(0,0,0,0) 0 26px, rgba(230,0,18,0.045) 26px 28px);
+  opacity:.9;
+}
 body::after{
-  content:'';
-  position:fixed;inset:0;
-  background:repeating-linear-gradient(
-    0deg,
-    transparent,transparent 2px,
-    rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 4px
-  );
-  pointer-events:none;z-index:9999;
+  content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,0.10) 2px 3px);
+  mix-blend-mode:multiply;opacity:.4;
 }
 
-/* ─── INTRO SCREEN ───────────────────────────────────────────── */
-#intro{
-  position:fixed;inset:0;
-  background:var(--void);
-  display:flex;flex-direction:column;
+/* ══════════════════════════════════════════════════════════
+   CUSTOM CURSOR
+═══════════════════════════════════════════════════════════ */
+#cursor{
+  position:fixed;top:0;left:0;z-index:10000;pointer-events:none;
+  width:26px;height:26px;margin:-13px 0 0 -13px;
+  transition:transform .08s ease-out;mix-blend-mode:difference;
+}
+#cursor::before{
+  content:'';position:absolute;inset:0;
+  background:var(--red);
+  clip-path:polygon(0 0,72% 36%,100% 12%,64% 60%,100% 100%,38% 74%,8% 96%,30% 50%);
+}
+#cursor.click{transform:scale(.6)}
+@media(hover:none){#cursor{display:none}body{cursor:auto}}
+
+/* ══════════════════════════════════════════════════════════
+   TITLE / PRESS START
+═══════════════════════════════════════════════════════════ */
+#title{
+  position:fixed;inset:0;z-index:2000;
+  background:var(--red);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+#title::before{
+  content:'';position:absolute;inset:-20%;
+  background:
+    repeating-conic-gradient(from 0deg at 50% 50%, var(--red) 0deg 6deg, var(--red-deep) 6deg 12deg);
+  opacity:.55;animation:spin 50s linear infinite;
+}
+#title::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(rgba(0,0,0,0.55) 1.2px,transparent 1.4px) 0 0/12px 12px;
+  opacity:.5;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.title-card{
+  position:relative;z-index:2;text-align:center;
+  transform:rotate(-4deg);
+}
+.title-kanji{
+  font-family:var(--jp);font-weight:800;
+  font-size:clamp(40px,12vw,140px);
+  color:var(--black);line-height:.9;
+  -webkit-text-stroke:2px var(--white);
+  letter-spacing:.05em;
+}
+.title-main{
+  font-family:var(--display);
+  font-size:clamp(46px,15vw,180px);
+  line-height:.82;color:var(--white);
+  text-transform:uppercase;
+  text-shadow:6px 6px 0 var(--black);
+  letter-spacing:.01em;
+}
+.title-sub{
+  display:inline-block;margin-top:1rem;
+  font-family:var(--impact);
+  font-size:clamp(11px,2.4vw,20px);
+  background:var(--black);color:var(--white);
+  padding:.5rem 1.1rem;transform:skewX(-10deg);
+  letter-spacing:.18em;
+}
+#press-start{
+  position:absolute;bottom:9%;left:0;right:0;z-index:3;text-align:center;
+  font-family:var(--impact);
+  font-size:clamp(16px,3.5vw,30px);
+  color:var(--black);letter-spacing:.12em;
+  cursor:none;border:none;background:none;width:100%;
+  text-transform:uppercase;
+  animation:flash 1s steps(1) infinite;
+}
+#press-start span{
+  background:var(--white);padding:.4rem 1.6rem;transform:skewX(-8deg);display:inline-block;
+  box-shadow:7px 7px 0 var(--black);
+}
+@keyframes flash{0%,55%{opacity:1}56%,100%{opacity:.15}}
+#title.shuffling::before{animation:spin 1.2s linear infinite}
+.shuffle-deck{
+  position:absolute;inset:0;z-index:4;display:none;
   align-items:center;justify-content:center;
-  z-index:1000;
-  gap:2rem;
 }
-#intro-logo{
-  font-family:var(--pixel);
-  font-size:clamp(10px,3vw,22px);
-  color:var(--gold);
-  text-align:center;
-  line-height:2;
-  text-shadow:0 0 20px rgba(255,215,0,0.5);
-  animation:glow 2s ease-in-out infinite alternate;
-}
-@keyframes glow{
-  from{text-shadow:0 0 10px rgba(255,215,0,0.4)}
-  to{text-shadow:0 0 30px rgba(255,215,0,0.9),0 0 60px rgba(255,215,0,0.4)}
-}
-#intro-sub{
-  font-family:var(--pixel);
-  font-size:clamp(6px,1.5vw,11px);
-  color:var(--muted);
-  text-align:center;
-  letter-spacing:0.1em;
-}
-#start-btn{
-  font-family:var(--pixel);
-  font-size:clamp(8px,2vw,13px);
-  color:var(--void);
-  background:var(--crimson);
-  border:none;
-  padding:1rem 2.5rem;
-  cursor:pointer;
-  image-rendering:pixelated;
-  clip-path:polygon(4px 0%,calc(100% - 4px) 0%,100% 4px,100% calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,0% calc(100% - 4px),0% 4px);
-  transition:transform 0.1s,background 0.1s;
-  animation:blink-btn 1.2s step-end infinite;
-}
-#start-btn:hover{background:var(--gold);transform:scale(1.05)}
-#start-btn:active{transform:scale(0.97)}
-@keyframes blink-btn{
-  0%,49%{opacity:1}50%,100%{opacity:0.4}
-}
-.intro-pixel{font-size:48px;line-height:1;filter:drop-shadow(0 0 10px var(--gold))}
-
-/* loading bar */
-#load-bar-wrap{
-  width:280px;height:16px;
-  border:2px solid var(--muted);
-  display:none;
-  position:relative;overflow:hidden;
-}
-#load-bar{
-  height:100%;width:0%;
-  background:linear-gradient(90deg,var(--crimson),var(--gold));
-  transition:width 0.05s linear;
-}
-
-/* ─── HUD / HEADER ───────────────────────────────────────────── */
-#hud{
-  position:fixed;top:0;left:0;right:0;
-  background:rgba(15,15,26,0.95);
-  border-bottom:2px solid var(--crimson);
-  padding:0.6rem 2rem;
-  display:flex;align-items:center;justify-content:space-between;
-  z-index:100;
-  backdrop-filter:blur(4px);
-}
-#hud-name{
-  font-family:var(--pixel);
-  font-size:clamp(7px,1.5vw,11px);
-  color:var(--gold);
-}
-#hud-nav{
-  display:flex;gap:1.5rem;
-  list-style:none;
-}
-#hud-nav a{
-  font-family:var(--pixel);
-  font-size:clamp(5px,1vw,9px);
-  color:var(--muted);
-  text-decoration:none;
-  transition:color 0.2s;
-  position:relative;
-}
-#hud-nav a::after{
-  content:'';position:absolute;bottom:-2px;left:0;width:0;height:2px;
-  background:var(--crimson);transition:width 0.2s;
-}
-#hud-nav a:hover{color:var(--white)}
-#hud-nav a:hover::after{width:100%}
-#hud-xp{
-  font-family:var(--pixel);
-  font-size:clamp(5px,1vw,9px);
-  color:var(--green);
-}
-
-/* ─── HERO / WORLD MAP ───────────────────────────────────────── */
-#hero{
-  min-height:100vh;
+#title.shuffling .shuffle-deck{display:flex}
+.s-card{
+  position:absolute;width:78px;height:108px;background:var(--black);
+  border:3px solid var(--white);
   display:flex;align-items:center;justify-content:center;
-  flex-direction:column;
-  position:relative;
-  overflow:hidden;
-  padding-top:70px;
+  font-family:var(--display);font-size:34px;color:var(--red-bright);
+  animation:fly .55s ease-in-out infinite;
 }
-#hero-bg{
-  position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 50%,rgba(15,52,96,0.4) 0%,transparent 70%),
-    radial-gradient(ellipse 40% 40% at 20% 30%,rgba(233,69,96,0.15) 0%,transparent 60%);
-}
-.pixel-grid{
-  position:absolute;inset:0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);
-  background-size:40px 40px;
-}
-/* Floating pixel stars */
-.star{
-  position:absolute;
-  width:3px;height:3px;
-  background:var(--white);
-  animation:twinkle var(--dur,3s) ease-in-out infinite var(--delay,0s);
-}
-@keyframes twinkle{
-  0%,100%{opacity:0.1;transform:scale(1)}
-  50%{opacity:1;transform:scale(1.5)}
+@keyframes fly{
+  0%{transform:translate(0,0) rotate(0)}
+  50%{transform:translate(var(--tx,120px),var(--ty,-60px)) rotate(var(--rot,180deg))}
+  100%{transform:translate(0,0) rotate(0)}
 }
 
-#hero-content{
-  position:relative;z-index:2;
-  text-align:center;
-  display:flex;flex-direction:column;align-items:center;
-  gap:1.5rem;
-}
+/* ══════════════════════════════════════════════════════════
+   APP SHELL (hidden until start)
+═══════════════════════════════════════════════════════════ */
+#app{display:none;position:relative;z-index:1}
 
-/* ─── PIXEL CHARACTER (CSS-DRAWN) ───────────────────────────── */
-#character-wrap{
-  display:flex;flex-direction:column;align-items:center;
-  gap:0;
-  position:relative;
-}
-.char-name-tag{
-  font-family:var(--pixel);
-  font-size:8px;
-  color:var(--gold);
-  background:rgba(0,0,0,0.7);
-  padding:4px 8px;
-  margin-bottom:6px;
-  border:1px solid var(--gold);
-}
-/* The actual pixel art character via box-shadow mosaic */
-#pixel-char{
-  image-rendering:pixelated;
-  width:32px;height:48px;
-  transform:scale(3);
-  transform-origin:top center;
-  margin-bottom:50px;
-  animation:idle-bob 0.8s step-end infinite;
-  position:relative;
-}
-@keyframes idle-bob{
-  0%,100%{transform:scale(3) translateY(0px)}
-  50%{transform:scale(3) translateY(-1px)}
-}
-/* Head */
-#ph{
-  width:16px;height:16px;
-  margin:0 auto;
-  background:
-    /* skin */
-    linear-gradient(var(--skin,#F4A460),var(--skin,#F4A460));
-  position:relative;
-  box-shadow:
-    /* hair row 1 */
-    0px -2px 0 #3B1F0E,
-    2px -2px 0 #3B1F0E,
-    4px -2px 0 #3B1F0E,
-    6px -2px 0 #3B1F0E,
-    8px -2px 0 #3B1F0E,
-    10px -2px 0 #3B1F0E,
-    12px -2px 0 #3B1F0E,
-    14px -2px 0 #3B1F0E,
-    /* hair row 0 */
-    0px -4px 0 #3B1F0E,
-    2px -4px 0 #3B1F0E,
-    4px -4px 0 #3B1F0E,
-    6px -4px 0 #3B1F0E,
-    8px -4px 0 #3B1F0E,
-    10px -4px 0 #3B1F0E,
-    12px -4px 0 #3B1F0E,
-    14px -4px 0 #3B1F0E,
-    /* eyes */
-    4px 6px 0 #1A1A2E,
-    10px 6px 0 #1A1A2E,
-    /* smile */
-    4px 10px 0 #C0704A,
-    6px 12px 0 #C0704A,
-    8px 12px 0 #C0704A,
-    10px 10px 0 #C0704A;
-  image-rendering:pixelated;
-}
-/* Body */
-#pb{
-  width:16px;height:20px;
-  margin:0 auto;
-  background:#E94560;
-  position:relative;
-  box-shadow:
-    /* collar */
-    6px -2px 0 #fff,
-    8px -2px 0 #fff,
-    /* pocket */
-    2px 6px 0 #c73a52,
-    4px 6px 0 #c73a52,
-    2px 8px 0 #c73a52,
-    4px 8px 0 #c73a52;
-}
-/* Legs */
-#pl{
-  width:16px;height:12px;
-  margin:0 auto;
-  background:transparent;
-  position:relative;
-  box-shadow:
-    0px 0px 0 2px #1E3A5F,
-    2px 0px 0 2px #1E3A5F,
-    4px 0px 0 2px #1E3A5F,
-    0px 2px 0 2px #1E3A5F,
-    2px 2px 0 2px #1E3A5F,
-    4px 2px 0 2px #1E3A5F,
-    8px 0px 0 2px #1E3A5F,
-    10px 0px 0 2px #1E3A5F,
-    12px 0px 0 2px #1E3A5F,
-    8px 2px 0 2px #1E3A5F,
-    10px 2px 0 2px #1E3A5F,
-    12px 2px 0 2px #1E3A5F,
-    /* shoes */
-    0px 6px 0 2px #333,
-    2px 6px 0 2px #333,
-    4px 6px 0 2px #333,
-    6px 6px 0 2px #333,
-    8px 6px 0 2px #333,
-    10px 6px 0 2px #333,
-    12px 6px 0 2px #333;
-}
-
-/* ─── DIALOGUE BOX ───────────────────────────────────────────── */
-.dialogue{
-  font-family:var(--pixel);
-  font-size:clamp(6px,1.2vw,9px);
-  background:rgba(15,15,26,0.95);
-  border:2px solid var(--white);
-  border-radius:2px;
-  padding:1rem 1.2rem;
-  max-width:480px;
-  position:relative;
-  text-align:left;
-  line-height:2;
-}
-.dialogue::before{
-  content:'▶ JAI_WEI';
-  display:block;
-  color:var(--gold);
-  margin-bottom:0.5rem;
-  font-size:clamp(5px,1vw,8px);
-}
-.dialogue p{color:var(--white)}
-.dialogue span.em{color:var(--crimson)}
-.dialogue span.acc{color:var(--green)}
-.dialogue span.gold{color:var(--gold)}
-
-/* cursor blink inside dialogue */
-.blink{animation:blink-cur 0.8s step-end infinite}
-@keyframes blink-cur{0%,49%{opacity:1}50%,100%{opacity:0}}
-
-/* ─── SECTIONS / ROOMS ───────────────────────────────────────── */
-.room{
-  padding:6rem 2rem;
-  max-width:1100px;
-  margin:0 auto;
-  position:relative;
-}
-.room-label{
-  font-family:var(--pixel);
-  font-size:clamp(5px,1vw,8px);
-  color:var(--crimson);
-  letter-spacing:0.2em;
-  margin-bottom:0.5rem;
-  display:flex;align-items:center;gap:0.5rem;
-}
-.room-label::before{content:'⚔';font-size:12px}
-.room-title{
-  font-family:var(--pixel);
-  font-size:clamp(12px,3vw,26px);
-  color:var(--gold);
-  margin-bottom:2.5rem;
-  line-height:1.6;
-}
-.room-divider{
-  width:100%;height:2px;
-  background:linear-gradient(90deg,var(--crimson),transparent);
-  margin-bottom:3rem;
-}
-/* Fade-in on scroll */
-.fade-in{
-  opacity:0;
-  transform:translateY(30px);
-  transition:opacity 0.6s ease,transform 0.6s ease;
-}
-.fade-in.visible{opacity:1;transform:translateY(0)}
-
-/* ─── ABOUT ROOM ─────────────────────────────────────────────── */
-#about .about-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:2rem;
-}
-@media(max-width:700px){#about .about-grid{grid-template-columns:1fr}}
-.stat-card{
-  background:var(--floor);
-  border:1px solid var(--wall);
-  border-left:3px solid var(--crimson);
-  padding:1.2rem 1.5rem;
-  transition:border-color 0.2s,transform 0.2s;
-}
-.stat-card:hover{border-left-color:var(--gold);transform:translateX(4px)}
-.stat-card h3{
-  font-family:var(--pixel);
-  font-size:clamp(6px,1.2vw,9px);
-  color:var(--gold);
-  margin-bottom:0.6rem;
-}
-.stat-card p{
-  font-family:var(--term);
-  font-size:clamp(14px,2vw,18px);
-  color:var(--white);
-}
-.fun-fact{
-  background:var(--floor);
-  border:1px solid var(--wall);
-  border-top:3px solid var(--green);
-  padding:1.5rem;
-  margin-top:2rem;
-  font-family:var(--pixel);
-  font-size:clamp(6px,1.2vw,9px);
-  color:var(--muted);
-  line-height:2.5;
-}
-.fun-fact span{color:var(--green)}
-
-/* ─── SKILLS ROOM ────────────────────────────────────────────── */
-#skills .skill-tree{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-  gap:1.5rem;
-}
-.skill-branch{
-  background:var(--floor);
-  border:1px solid var(--wall);
-  padding:1.5rem;
-  position:relative;
-}
-.skill-branch-title{
-  font-family:var(--pixel);
-  font-size:clamp(6px,1.2vw,9px);
-  color:var(--crimson);
-  margin-bottom:1rem;
-  display:flex;align-items:center;gap:0.5rem;
-}
-.skill-tag{
-  display:inline-block;
-  font-family:var(--pixel);
-  font-size:clamp(5px,1vw,8px);
-  padding:4px 10px;
-  margin:3px;
-  border:1px solid var(--muted);
-  color:var(--muted);
-  cursor:default;
-  transition:all 0.15s;
-}
-.skill-tag:hover{
-  border-color:var(--green);
-  color:var(--green);
-  background:rgba(87,255,140,0.05);
-  transform:translateY(-2px);
-}
-.skill-tag.hot{border-color:var(--crimson);color:var(--crimson)}
-.skill-tag.hot:hover{background:rgba(233,69,96,0.08)}
-
-/* XP bar */
-.xp-bar-wrap{
-  height:8px;
-  background:var(--wall);
-  margin-top:1rem;
-  position:relative;
-  overflow:visible;
-}
-.xp-bar{
-  height:100%;
-  background:linear-gradient(90deg,var(--crimson),var(--gold));
-  width:0%;
-  transition:width 1.2s cubic-bezier(0.23,1,0.32,1);
-}
-.xp-label{
-  font-family:var(--pixel);
-  font-size:6px;
-  color:var(--muted);
-  position:absolute;
-  right:0;top:-16px;
-}
-
-/* ─── PROJECTS ROOM ──────────────────────────────────────────── */
-#projects .quest-board{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
-  gap:2rem;
-}
-.quest-card{
-  background:var(--floor);
-  border:1px solid var(--wall);
-  padding:0;
-  position:relative;
-  overflow:hidden;
-  transition:transform 0.2s,box-shadow 0.2s;
-  cursor:pointer;
-}
-.quest-card:hover{
-  transform:translateY(-6px);
-  box-shadow:0 12px 40px rgba(233,69,96,0.25);
-}
-.quest-card:hover .quest-header{background:var(--crimson)}
-.quest-header{
-  background:var(--wall);
-  padding:1rem 1.2rem;
-  font-family:var(--pixel);
-  font-size:clamp(6px,1.2vw,9px);
-  color:var(--white);
-  transition:background 0.2s;
+/* ── HUD ─────────────────────────────────────────────── */
+#hud{
+  position:fixed;top:0;left:0;right:0;z-index:500;
   display:flex;align-items:center;justify-content:space-between;
-}
-.quest-rank{
-  font-size:clamp(5px,1vw,8px);
-  color:var(--gold);
-}
-.quest-body{padding:1.2rem}
-.quest-desc{
-  font-family:var(--term);
-  font-size:clamp(15px,2vw,18px);
-  color:var(--muted);
-  margin-bottom:1rem;
-  line-height:1.5;
-}
-.quest-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
-.q-tag{
-  font-family:var(--pixel);
-  font-size:5px;
-  padding:3px 8px;
-  background:rgba(15,52,96,0.6);
-  border:1px solid var(--blue);
-  color:var(--white);
-}
-.quest-reward{
-  font-family:var(--pixel);
-  font-size:6px;
-  color:var(--gold);
-  border-top:1px solid var(--wall);
-  padding-top:0.8rem;
-  margin-top:0.5rem;
-}
-.quest-link{
-  display:inline-block;
-  margin-top:0.8rem;
-  font-family:var(--pixel);
-  font-size:6px;
-  color:var(--crimson);
-  text-decoration:none;
-  border:1px solid var(--crimson);
-  padding:4px 10px;
-  transition:all 0.15s;
-}
-.quest-link:hover{background:var(--crimson);color:#fff}
-.badge-hackathon{
-  position:absolute;top:0;right:0;
-  background:var(--gold);
-  color:var(--void);
-  font-family:var(--pixel);
-  font-size:5px;
-  padding:4px 8px;
-  clip-path:polygon(0 0,100% 0,100% 100%,8px 100%);
-}
-
-/* ─── TIMELINE ───────────────────────────────────────────────── */
-#story .timeline{
-  position:relative;
-  padding-left:2rem;
-}
-#story .timeline::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;
-  width:2px;
-  background:linear-gradient(180deg,var(--crimson),transparent);
-}
-.tl-item{
-  position:relative;
-  margin-bottom:2.5rem;
-  padding-left:1.5rem;
-}
-.tl-item::before{
-  content:'◆';
-  position:absolute;left:-1.75rem;top:0;
-  font-size:12px;color:var(--crimson);
-}
-.tl-year{
-  font-family:var(--pixel);
-  font-size:clamp(5px,1vw,8px);
-  color:var(--gold);
-  margin-bottom:0.3rem;
-}
-.tl-title{
-  font-family:var(--pixel);
-  font-size:clamp(7px,1.2vw,11px);
-  color:var(--white);
-  margin-bottom:0.4rem;
-}
-.tl-desc{
-  font-family:var(--term);
-  font-size:clamp(16px,2vw,20px);
-  color:var(--muted);
-}
-
-/* ─── CONTACT ROOM ───────────────────────────────────────────── */
-#contact .contact-box{
-  background:var(--floor);
-  border:2px solid var(--crimson);
-  padding:3rem;
-  text-align:center;
-  max-width:600px;
-  margin:0 auto;
-  position:relative;
-}
-.contact-box::before{
-  content:'[ SEND MESSAGE ]';
-  position:absolute;top:-13px;left:50%;transform:translateX(-50%);
-  background:var(--void);padding:0 1rem;
-  font-family:var(--pixel);font-size:8px;color:var(--crimson);
-}
-.contact-link{
-  display:flex;align-items:center;gap:1rem;
-  font-family:var(--pixel);font-size:clamp(6px,1.2vw,9px);
-  color:var(--muted);
-  text-decoration:none;
-  padding:1rem;
-  border:1px solid var(--wall);
-  margin-bottom:1rem;
-  transition:all 0.15s;
-}
-.contact-link:hover{color:var(--white);border-color:var(--crimson);background:rgba(233,69,96,0.06)}
-.contact-link .cl-icon{font-size:20px;color:var(--gold)}
-.avail-badge{
-  display:inline-flex;align-items:center;gap:0.5rem;
-  font-family:var(--pixel);font-size:8px;
-  color:var(--green);
-  margin-bottom:2rem;
-}
-.avail-dot{
-  width:10px;height:10px;
-  border-radius:50%;background:var(--green);
-  animation:pulse-dot 1.5s ease-in-out infinite;
-}
-@keyframes pulse-dot{
-  0%,100%{box-shadow:0 0 0 0 rgba(87,255,140,0.6)}
-  50%{box-shadow:0 0 0 6px rgba(87,255,140,0)}
-}
-
-/* ─── FLOATING XP POPUP ──────────────────────────────────────── */
-#xp-popup{
-  position:fixed;
-  right:2rem;bottom:2rem;
-  background:var(--floor);
-  border:2px solid var(--gold);
-  padding:0.8rem 1.2rem;
-  font-family:var(--pixel);font-size:9px;color:var(--gold);
-  z-index:200;
-  opacity:0;
-  transform:translateY(20px);
-  transition:all 0.4s;
+  padding:.7rem 1.4rem;
+  background:linear-gradient(90deg,var(--black) 60%,transparent);
   pointer-events:none;
 }
-#xp-popup.show{opacity:1;transform:translateY(0)}
-
-/* ─── MINI MAP ───────────────────────────────────────────────── */
-#minimap{
-  position:fixed;right:2rem;top:50%;transform:translateY(-50%);
-  display:flex;flex-direction:column;gap:6px;
-  z-index:200;
+#hud-brand{
+  pointer-events:auto;
+  font-family:var(--impact);font-size:clamp(13px,2vw,18px);
+  color:var(--white);transform:skewX(-8deg);
+  background:var(--red);padding:.35rem .9rem;
+  box-shadow:4px 4px 0 var(--black);letter-spacing:.04em;
+  display:flex;align-items:center;gap:.5rem;
 }
-.mm-dot{
-  width:8px;height:8px;
-  background:var(--muted);
-  cursor:pointer;
-  transition:all 0.2s;
-  clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);
+#hud-brand b{font-family:var(--jp)}
+#mask-btn{
+  pointer-events:auto;cursor:none;border:none;background:none;
+  font-size:26px;line-height:1;filter:drop-shadow(2px 2px 0 var(--black));
+  transition:transform .15s;animation:mask-idle 3s ease-in-out infinite;
 }
-.mm-dot.active{background:var(--crimson);transform:scale(1.4)}
-.mm-dot:hover{background:var(--gold)}
+#mask-btn:hover{transform:scale(1.25) rotate(-12deg)}
+@keyframes mask-idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 
-/* ─── FOOTER ─────────────────────────────────────────────────── */
-footer{
-  text-align:center;
-  padding:3rem;
-  font-family:var(--pixel);
-  font-size:7px;
-  color:var(--muted);
-  border-top:1px solid var(--wall);
+/* ── SIDE MENU (P5 slanted) ──────────────────────────── */
+#menu-toggle{
+  position:fixed;top:.7rem;right:1.2rem;z-index:600;
+  pointer-events:auto;cursor:none;border:none;
+  background:var(--white);color:var(--black);
+  font-family:var(--impact);font-size:14px;letter-spacing:.1em;
+  padding:.5rem .9rem;transform:skewX(-8deg);
+  box-shadow:4px 4px 0 var(--red);
 }
-footer span{color:var(--crimson)}
+#side-menu{
+  position:fixed;top:0;right:0;bottom:0;width:min(420px,86vw);z-index:590;
+  background:var(--red);
+  transform:translateX(110%);transition:transform .45s cubic-bezier(.6,0,.2,1);
+  display:flex;flex-direction:column;justify-content:center;gap:.4rem;
+  padding:4rem 0 4rem 3rem;overflow:hidden;
+}
+#side-menu::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(rgba(0,0,0,.35) 1.2px,transparent 1.4px) 0 0/14px 14px;
+  opacity:.5;pointer-events:none;
+}
+#side-menu.open{transform:translateX(0)}
+.menu-link{
+  position:relative;z-index:2;
+  font-family:var(--display);font-size:clamp(28px,5vw,46px);
+  color:var(--black);text-decoration:none;text-transform:uppercase;
+  letter-spacing:.02em;line-height:1.05;
+  transform:skewX(-8deg) translateX(0);
+  transition:transform .15s,color .15s;
+  display:flex;align-items:baseline;gap:.6rem;
+}
+.menu-link i{font-family:var(--jp);font-style:normal;font-size:.42em;color:var(--white)}
+.menu-link:hover{transform:skewX(-8deg) translateX(18px);color:var(--white)}
+.menu-link:hover i{color:var(--black)}
+#menu-close{
+  position:absolute;top:1.4rem;right:1.6rem;z-index:3;
+  font-family:var(--impact);font-size:16px;color:var(--black);
+  background:var(--white);border:none;cursor:none;padding:.4rem .8rem;
+  transform:skewX(-8deg);
+}
 
-/* ─── SCROLLBAR ──────────────────────────────────────────────── */
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:var(--void)}
-::-webkit-scrollbar-thumb{background:var(--crimson)}
+/* ══════════════════════════════════════════════════════════
+   HERO — ALL-OUT-ATTACK SPLASH
+═══════════════════════════════════════════════════════════ */
+#hero{
+  min-height:100vh;display:flex;align-items:center;
+  position:relative;overflow:hidden;padding:6rem 1.4rem 3rem;
+}
+.hero-speed{
+  position:absolute;inset:0;z-index:0;
+  background:repeating-conic-gradient(from -20deg at 18% 60%,
+     transparent 0deg 5deg, rgba(230,0,18,.12) 5deg 7deg);
+  opacity:.7;
+}
+.hero-inner{
+  position:relative;z-index:2;width:100%;max-width:1180px;margin:0 auto;
+  display:grid;grid-template-columns:1.2fr .8fr;gap:2rem;align-items:center;
+}
+@media(max-width:840px){.hero-inner{grid-template-columns:1fr}}
+.hero-codename{
+  font-family:var(--jp);font-weight:800;font-size:clamp(16px,3vw,26px);
+  color:var(--red-bright);letter-spacing:.3em;margin-bottom:.4rem;
+}
+.hero-name{
+  font-family:var(--display);text-transform:uppercase;line-height:.82;
+  font-size:clamp(64px,13vw,168px);color:var(--white);
+  text-shadow:7px 7px 0 var(--red);
+}
+.hero-name .b2{color:var(--red);-webkit-text-stroke:2px var(--white);text-shadow:none}
+.hero-tag{
+  display:inline-block;margin-top:1.2rem;
+  font-family:var(--impact);font-size:clamp(13px,2vw,20px);
+  background:var(--white);color:var(--black);
+  padding:.5rem 1.1rem;transform:skewX(-9deg);
+  box-shadow:6px 6px 0 var(--red);letter-spacing:.05em;
+}
+.hero-blurb{
+  margin-top:1.6rem;max-width:30rem;
+  font-family:var(--cond);font-size:clamp(17px,2.2vw,21px);
+  color:var(--paper);line-height:1.5;font-weight:500;
+}
+.hero-blurb b{color:var(--red-bright);font-weight:700}
+.hero-cta{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.7rem}
+.btn{
+  font-family:var(--impact);font-size:14px;letter-spacing:.08em;
+  text-transform:uppercase;text-decoration:none;cursor:none;
+  padding:.7rem 1.3rem;transform:skewX(-9deg);transition:transform .12s,background .12s,color .12s;
+  border:2px solid var(--white);display:inline-block;
+}
+.btn span{display:inline-block;transform:skewX(9deg)}
+.btn-red{background:var(--red);color:var(--white);border-color:var(--red)}
+.btn-red:hover{background:var(--white);color:var(--red);transform:skewX(-9deg) scale(1.05)}
+.btn-ghost{background:transparent;color:var(--white)}
+.btn-ghost:hover{background:var(--white);color:var(--black);transform:skewX(-9deg) scale(1.05)}
 
-/* ─── RESPONSIVE ─────────────────────────────────────────────── */
+/* hero profile card (calling card silhouette) */
+.hero-card{
+  position:relative;justify-self:center;
+  width:min(330px,80vw);aspect-ratio:3/4;
+  background:var(--black);border:4px solid var(--white);
+  box-shadow:12px 12px 0 var(--red);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:.4rem;overflow:hidden;transform:rotate(3deg);
+  transition:transform .2s;
+}
+.hero-card:hover{transform:rotate(0deg) scale(1.02)}
+.hero-card::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(120deg,transparent 0 18px,rgba(230,0,18,.16) 18px 20px);
+}
+.hero-mask{font-size:120px;position:relative;z-index:2;filter:drop-shadow(4px 4px 0 var(--red))}
+.hero-card-name{
+  position:relative;z-index:2;font-family:var(--display);
+  font-size:34px;color:var(--white);text-transform:uppercase;
+}
+.hero-card-role{
+  position:relative;z-index:2;font-family:var(--impact);font-size:11px;
+  letter-spacing:.18em;color:var(--red-bright);
+}
+.hero-card-tag{
+  position:absolute;top:0;left:0;z-index:3;
+  font-family:var(--impact);font-size:10px;letter-spacing:.12em;
+  background:var(--red);color:#fff;padding:.35rem .7rem;
+}
+.scroll-hint{
+  position:absolute;bottom:1.4rem;left:50%;transform:translateX(-50%);z-index:3;
+  font-family:var(--impact);font-size:11px;letter-spacing:.2em;color:var(--white);
+  display:flex;flex-direction:column;align-items:center;gap:.3rem;
+  animation:bob 1.4s ease-in-out infinite;
+}
+@keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+
+/* ══════════════════════════════════════════════════════════
+   SECTION SHELL
+═══════════════════════════════════════════════════════════ */
+section.zone{position:relative;padding:5.5rem 1.4rem;max-width:1180px;margin:0 auto}
+.zone-head{margin-bottom:2.6rem;position:relative}
+.zone-kicker{
+  font-family:var(--impact);font-size:clamp(11px,1.6vw,14px);
+  letter-spacing:.25em;color:var(--red-bright);margin-bottom:.3rem;
+  display:flex;align-items:center;gap:.6rem;
+}
+.zone-kicker::before{content:'';width:34px;height:3px;background:var(--red)}
+.zone-title{
+  font-family:var(--display);text-transform:uppercase;line-height:.9;
+  font-size:clamp(38px,7vw,86px);color:var(--white);
+  transform:skewX(-6deg);display:inline-block;
+}
+.zone-title em{font-style:normal;color:var(--red);-webkit-text-stroke:1.5px var(--white)}
+.zone-jp{
+  font-family:var(--jp);font-weight:700;color:var(--grey);
+  font-size:clamp(13px,1.8vw,18px);letter-spacing:.3em;margin-top:.3rem;
+}
+
+/* reveal animation */
+.reveal{opacity:0;transform:translateY(38px) skewX(-3deg);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* ── CONFIDANT / STATUS (about) ──────────────────────── */
+.status-wrap{display:grid;grid-template-columns:1fr 1.1fr;gap:2rem;align-items:start}
+@media(max-width:780px){.status-wrap{grid-template-columns:1fr}}
+.status-panel{
+  background:var(--ink);border:3px solid var(--white);
+  box-shadow:8px 8px 0 var(--red);padding:1.6rem;position:relative;
+}
+.status-panel h3{
+  font-family:var(--impact);font-size:13px;letter-spacing:.16em;
+  color:var(--black);background:var(--white);display:inline-block;
+  padding:.3rem .8rem;transform:skewX(-8deg);margin-bottom:1.2rem;
+}
+.stat-row{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.55rem 0;border-bottom:1px dashed rgba(244,241,233,.18);
+}
+.stat-row:last-child{border-bottom:none}
+.stat-name{font-family:var(--cond);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:18px}
+.stat-name small{display:block;font-family:var(--jp);font-size:11px;color:var(--grey);letter-spacing:.18em}
+.stat-stars{font-family:var(--display);font-size:20px;color:var(--red-bright);letter-spacing:2px;white-space:nowrap}
+.stat-stars i{color:rgba(244,241,233,.2);font-style:normal}
+.bio{
+  background:var(--white);color:var(--black);
+  border:3px solid var(--black);box-shadow:8px 8px 0 var(--red);
+  padding:1.6rem;position:relative;transform:rotate(-1deg);
+}
+.bio::before{
+  content:'CONFIDANT';position:absolute;top:-14px;left:18px;
+  font-family:var(--impact);font-size:11px;letter-spacing:.16em;
+  background:var(--red);color:#fff;padding:.25rem .7rem;transform:skewX(-8deg);
+}
+.bio h3{font-family:var(--display);font-size:clamp(24px,3.5vw,34px);text-transform:uppercase;line-height:.95;margin-bottom:.7rem}
+.bio p{font-family:var(--cond);font-weight:500;font-size:18px;line-height:1.45;margin-bottom:.7rem}
+.bio .facts{margin-top:1rem;border-top:2px solid var(--black);padding-top:.9rem}
+.bio .facts li{
+  list-style:none;font-family:var(--cond);font-weight:600;font-size:16px;
+  padding:.28rem 0 .28rem 1.4rem;position:relative;
+}
+.bio .facts li::before{content:'◆';position:absolute;left:0;color:var(--red)}
+
+/* ── ARCANA / SKILLS ─────────────────────────────────── */
+.arcana-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1.4rem}
+.arcana{
+  background:var(--ink);border:3px solid var(--white);padding:1.3rem;
+  position:relative;overflow:hidden;transition:transform .18s,box-shadow .18s;
+}
+.arcana::after{
+  content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;
+  background:repeating-conic-gradient(from 0deg,transparent 0 8deg,rgba(230,0,18,.18) 8deg 16deg);
+  border-radius:50%;opacity:.5;transition:transform .4s;
+}
+.arcana:hover{transform:translateY(-6px) skewX(-2deg);box-shadow:0 12px 0 var(--red)}
+.arcana:hover::after{transform:rotate(60deg) scale(1.2)}
+.arcana-no{font-family:var(--jp);font-size:12px;color:var(--grey);letter-spacing:.2em}
+.arcana-name{
+  font-family:var(--display);font-size:26px;text-transform:uppercase;
+  color:var(--white);margin:.1rem 0 .9rem;line-height:1;
+}
+.arcana-name span{color:var(--red-bright)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem;position:relative;z-index:2}
+.tag{
+  font-family:var(--cond);font-weight:700;text-transform:uppercase;font-size:13px;
+  letter-spacing:.04em;padding:3px 9px;border:1.5px solid var(--grey);color:var(--paper);
+  transform:skewX(-8deg);transition:all .14s;
+}
+.tag span{display:inline-block;transform:skewX(8deg)}
+.tag.hot{border-color:var(--red);color:var(--red-bright)}
+.tag:hover{background:var(--red);color:#fff;border-color:var(--red);transform:skewX(-8deg) translateY(-2px)}
+.prof{position:relative;height:14px;background:#000;border:2px solid var(--white);transform:skewX(-12deg);overflow:hidden}
+.prof i{display:block;height:100%;width:0;background:repeating-linear-gradient(45deg,var(--red) 0 8px,var(--red-bright) 8px 16px);transition:width 1.1s cubic-bezier(.2,.9,.2,1)}
+.prof-label{font-family:var(--impact);font-size:10px;letter-spacing:.12em;color:var(--grey);margin-top:.4rem}
+
+/* ── CALLING CARDS / PROJECTS ────────────────────────── */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.7rem}
+.card{
+  position:relative;background:var(--white);color:var(--black);
+  border:3px solid var(--black);
+  box-shadow:9px 9px 0 var(--red);
+  padding:1.4rem 1.4rem 1.5rem;
+  transform:rotate(var(--tilt,-1.2deg));
+  transition:transform .2s,box-shadow .2s;overflow:hidden;
+}
+.card:nth-child(even){--tilt:1.2deg}
+.card::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(rgba(0,0,0,.10) 1px,transparent 1.3px) 0 0/9px 9px;opacity:.5;
+}
+.card:hover{transform:rotate(0) translateY(-6px) scale(1.02);box-shadow:14px 14px 0 var(--red)}
+.card-rank{
+  position:absolute;top:0;right:0;z-index:3;
+  font-family:var(--impact);font-size:11px;letter-spacing:.1em;
+  background:var(--red);color:#fff;padding:.3rem .7rem;
+}
+.card-badge{
+  display:inline-block;font-family:var(--impact);font-size:10px;letter-spacing:.1em;
+  background:var(--black);color:var(--white);padding:.25rem .6rem;transform:skewX(-8deg);margin-bottom:.6rem;
+}
+.card h3{
+  position:relative;z-index:2;font-family:var(--display);text-transform:uppercase;
+  font-size:clamp(24px,3vw,32px);line-height:.92;margin-bottom:.6rem;
+}
+.card h3 em{font-style:normal;color:var(--red)}
+.card p{position:relative;z-index:2;font-family:var(--cond);font-weight:500;font-size:16.5px;line-height:1.4;margin-bottom:.9rem}
+.card-tags{position:relative;z-index:2;display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1rem}
+.ct{font-family:var(--cond);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.04em;background:var(--black);color:var(--white);padding:2px 8px;transform:skewX(-8deg)}
+.ct span{display:inline-block;transform:skewX(8deg)}
+.card-reward{position:relative;z-index:2;font-family:var(--cond);font-weight:700;font-size:14px;color:var(--red-deep);border-top:2px solid var(--black);padding-top:.7rem;margin-bottom:.8rem}
+.card-links{position:relative;z-index:2;display:flex;gap:.5rem;flex-wrap:wrap}
+.clink{
+  font-family:var(--impact);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+  text-decoration:none;cursor:none;padding:.5rem .8rem;
+  background:var(--red);color:#fff;transform:skewX(-8deg);transition:transform .12s,background .12s;
+}
+.clink span{display:inline-block;transform:skewX(8deg)}
+.clink.alt{background:var(--black)}
+.clink:hover{transform:skewX(-8deg) translateY(-3px)}
+
+/* ── CONFIDANT RANKS / TIMELINE ──────────────────────── */
+.timeline{position:relative;padding-left:2.4rem}
+.timeline::before{content:'';position:absolute;left:.4rem;top:.4rem;bottom:.4rem;width:4px;background:repeating-linear-gradient(180deg,var(--red) 0 14px,transparent 14px 22px)}
+.tl{position:relative;margin-bottom:2rem;padding:1.1rem 1.3rem;background:var(--ink);border-left:4px solid var(--red);transition:transform .18s,background .18s}
+.tl:hover{transform:translateX(8px);background:#17151b}
+.tl::before{
+  content:attr(data-rank);position:absolute;left:-2.55rem;top:.9rem;
+  width:34px;height:34px;background:var(--red);color:#fff;
+  font-family:var(--display);font-size:15px;
+  display:flex;align-items:center;justify-content:center;
+  transform:rotate(45deg);
+}
+.tl::after{content:'';position:absolute;left:-2.55rem;top:.9rem;width:34px;height:34px;transform:rotate(45deg)}
+.tl-yr{font-family:var(--impact);font-size:12px;letter-spacing:.12em;color:var(--red-bright)}
+.tl-t{font-family:var(--display);text-transform:uppercase;font-size:clamp(19px,2.6vw,26px);line-height:1;margin:.25rem 0 .5rem;color:var(--white)}
+.tl-d{font-family:var(--cond);font-weight:500;font-size:16.5px;color:var(--paper);line-height:1.45}
+
+/* ── CALLING CARD CONTACT ────────────────────────────── */
+#contact .ransom{
+  max-width:680px;margin:0 auto;background:var(--white);color:var(--black);
+  border:4px solid var(--black);box-shadow:12px 12px 0 var(--red);
+  padding:2.4rem;position:relative;transform:rotate(-1deg);
+}
+#contact .ransom::before{
+  content:'';position:absolute;inset:0;background:radial-gradient(rgba(0,0,0,.08) 1px,transparent 1.3px) 0 0/10px 10px;opacity:.6;pointer-events:none;
+}
+.ransom-head{position:relative;z-index:2;font-family:var(--display);text-transform:uppercase;font-size:clamp(28px,5vw,52px);line-height:.9;margin-bottom:.4rem}
+.ransom-head em{font-style:normal;color:var(--red)}
+.ransom-sub{position:relative;z-index:2;font-family:var(--cond);font-weight:600;font-size:18px;margin-bottom:1.4rem}
+.avail{display:inline-flex;align-items:center;gap:.5rem;position:relative;z-index:2;font-family:var(--impact);font-size:12px;letter-spacing:.1em;background:var(--black);color:#fff;padding:.4rem .8rem;transform:skewX(-8deg);margin-bottom:1.4rem}
+.avail .dot{width:10px;height:10px;border-radius:50%;background:#36d36b;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(54,211,107,.6)}50%{box-shadow:0 0 0 7px rgba(54,211,107,0)}}
+.contact-links{position:relative;z-index:2;display:flex;flex-direction:column;gap:.7rem}
+.crow{
+  display:flex;align-items:center;gap:1rem;text-decoration:none;cursor:none;
+  font-family:var(--cond);font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+  font-size:18px;color:var(--black);background:var(--paper);
+  border:2px solid var(--black);padding:.7rem 1rem;transition:all .14s;
+}
+.crow .ico{font-size:22px}
+.crow:hover{background:var(--red);color:#fff;transform:translateX(6px);border-color:var(--red)}
+.ransom-foot{position:relative;z-index:2;margin-top:1.3rem;font-family:var(--cond);font-weight:600;font-size:15px;color:#444}
+
+/* ── FOOTER ──────────────────────────────────────────── */
+footer{text-align:center;padding:3rem 1.4rem;border-top:4px solid var(--red);position:relative}
+footer p{font-family:var(--impact);font-size:12px;letter-spacing:.1em;color:var(--grey)}
+footer p span{color:var(--red-bright)}
+footer .jp{font-family:var(--jp);font-size:14px;color:var(--white);margin-top:.4rem;letter-spacing:.4em}
+
+/* ── XP / NOTICE TOAST ───────────────────────────────── */
+#toast{
+  position:fixed;bottom:1.6rem;left:1.6rem;z-index:700;
+  background:var(--red);color:#fff;
+  font-family:var(--impact);font-size:13px;letter-spacing:.06em;
+  padding:.7rem 1.1rem;transform:skewX(-8deg) translateY(140%);opacity:0;
+  box-shadow:5px 5px 0 var(--black);transition:transform .4s cubic-bezier(.2,.9,.2,1),opacity .4s;
+}
+#toast.show{transform:skewX(-8deg) translateY(0);opacity:1}
+#toast b{display:block;transform:skewX(8deg)}
+
+/* ── SCROLLBAR ───────────────────────────────────────── */
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:var(--black)}
+::-webkit-scrollbar-thumb{background:var(--red);border:2px solid var(--black)}
+
+/* ══════════════════════════════════════════════════════════
+   BATTLE EASTER EGG
+═══════════════════════════════════════════════════════════ */
+#battle{
+  position:fixed;inset:0;z-index:3000;display:none;
+  background:var(--black);overflow:hidden;
+  flex-direction:column;justify-content:space-between;
+  cursor:none;
+}
+#battle.on{display:flex;animation:bzoom .3s ease-out}
+@keyframes bzoom{from{opacity:0;transform:scale(1.1)}to{opacity:1;transform:scale(1)}}
+#battle::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-conic-gradient(from 0deg at 70% 30%,transparent 0 4deg,rgba(230,0,18,.18) 4deg 6deg);
+  animation:spin 40s linear infinite;opacity:.6;
+}
+.b-top{position:relative;z-index:2;padding:2.4rem 2rem 0;text-align:center}
+.enemy{
+  display:inline-block;position:relative;
+  font-size:clamp(90px,22vw,200px);line-height:1;
+  filter:drop-shadow(0 0 24px var(--red));
+  animation:efloat 2.4s ease-in-out infinite;
+}
+.enemy.hit{animation:eshake .3s}
+.enemy.down{transform:rotate(90deg);opacity:.55;filter:grayscale(.4)}
+@keyframes efloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes eshake{0%,100%{transform:translateX(0)}20%{transform:translateX(-16px)}40%{transform:translateX(14px)}60%{transform:translateX(-10px)}80%{transform:translateX(8px)}}
+.enemy-name{font-family:var(--display);text-transform:uppercase;font-size:clamp(22px,4vw,40px);color:var(--white);margin-top:.3rem;transform:skewX(-6deg)}
+.enemy-name small{display:block;font-family:var(--jp);font-size:.4em;color:var(--red-bright);letter-spacing:.3em}
+.enemy-hp-wrap{max-width:480px;margin:.8rem auto 0;height:18px;background:#000;border:3px solid var(--white);transform:skewX(-12deg);overflow:hidden}
+.enemy-hp{height:100%;width:100%;background:repeating-linear-gradient(45deg,var(--red) 0 10px,var(--red-bright) 10px 20px);transition:width .35s ease-out}
+.enemy-hp-text{font-family:var(--impact);font-size:12px;letter-spacing:.12em;color:var(--white);margin-top:.4rem}
+
+/* floating damage numbers */
+.dmg{position:absolute;z-index:6;font-family:var(--display);font-size:clamp(40px,9vw,90px);color:var(--white);text-shadow:4px 4px 0 var(--red);pointer-events:none;animation:dmgpop .8s ease-out forwards}
+.dmg.weak{color:var(--red-bright);text-shadow:4px 4px 0 var(--white)}
+@keyframes dmgpop{0%{transform:translate(-50%,-50%) scale(.4) rotate(-8deg);opacity:0}25%{transform:translate(-50%,-90%) scale(1.2) rotate(-8deg);opacity:1}100%{transform:translate(-50%,-180%) scale(1) rotate(-8deg);opacity:0}}
+
+/* battle log banner */
+#b-banner{
+  position:absolute;top:42%;left:0;right:0;z-index:7;text-align:center;
+  font-family:var(--display);text-transform:uppercase;
+  font-size:clamp(34px,8vw,90px);color:var(--white);
+  text-shadow:6px 6px 0 var(--red);pointer-events:none;opacity:0;
+}
+#b-banner.show{animation:banner 1s ease-out}
+@keyframes banner{0%{opacity:0;transform:skewX(-14deg) scale(.4)}30%{opacity:1;transform:skewX(-14deg) scale(1.05)}80%{opacity:1;transform:skewX(-14deg) scale(1)}100%{opacity:0;transform:skewX(-14deg) scale(1.1)}}
+
+/* player + command UI */
+.b-bottom{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:flex-end;padding:1.4rem 2rem 2.2rem;gap:1rem;flex-wrap:wrap}
+.player-stat{font-family:var(--impact);color:var(--white)}
+.player-stat .pname{font-family:var(--display);font-size:clamp(20px,3vw,30px);color:var(--red-bright);text-transform:uppercase}
+.bar{margin-top:.4rem;width:200px;max-width:46vw;height:14px;background:#000;border:2px solid var(--white);transform:skewX(-12deg);overflow:hidden}
+.bar i{display:block;height:100%;transition:width .3s}
+.bar.hp i{background:#36d36b}
+.bar.sp i{background:#2aa9ff}
+.bar-label{font-size:11px;letter-spacing:.1em;margin-top:.3rem}
+
+.cmd-menu{display:flex;flex-direction:column;gap:.5rem;min-width:230px}
+.cmd{
+  font-family:var(--display);text-transform:uppercase;font-size:clamp(18px,3vw,26px);
+  letter-spacing:.04em;color:var(--white);background:var(--red);
+  border:none;cursor:none;text-align:left;
+  padding:.4rem 1.4rem .4rem 1.1rem;transform:skewX(-10deg) translateX(0);
+  box-shadow:5px 5px 0 var(--black);transition:transform .1s,background .1s,color .1s;
+  display:flex;justify-content:space-between;align-items:center;gap:1rem;
+}
+.cmd span{display:inline-block;transform:skewX(10deg)}
+.cmd small{font-family:var(--cond);font-weight:700;font-size:13px;opacity:.8;transform:skewX(10deg)}
+.cmd:hover:not(:disabled){background:var(--white);color:var(--red);transform:skewX(-10deg) translateX(-12px)}
+.cmd:disabled{opacity:.4;background:#333}
+.cmd.aoa{background:#000;color:var(--red-bright);border:3px solid var(--red-bright);animation:aoaglow .8s ease-in-out infinite}
+@keyframes aoaglow{0%,100%{box-shadow:5px 5px 0 var(--red)}50%{box-shadow:5px 5px 22px var(--red-bright)}}
+
+/* result / victory screen */
+#result{position:absolute;inset:0;z-index:20;display:none;background:var(--red);overflow:hidden;flex-direction:column;align-items:center;justify-content:center;gap:.6rem}
+#result.show{display:flex;animation:bzoom .4s}
+#result::before{content:'';position:absolute;inset:-20%;background:repeating-conic-gradient(from 0deg,var(--red) 0 6deg,var(--red-deep) 6deg 12deg);opacity:.5;animation:spin 30s linear infinite}
+.result-win{position:relative;z-index:2;font-family:var(--display);font-size:clamp(56px,16vw,180px);color:var(--white);text-transform:uppercase;text-shadow:7px 7px 0 var(--black);transform:rotate(-5deg)}
+.result-mask{position:relative;z-index:2;font-size:90px;filter:drop-shadow(4px 4px 0 var(--black))}
+.result-rows{position:relative;z-index:2;background:var(--black);border:3px solid var(--white);padding:1.2rem 1.6rem;transform:skewX(-8deg);min-width:min(420px,86vw)}
+.result-rows div{display:flex;justify-content:space-between;font-family:var(--impact);font-size:15px;letter-spacing:.06em;color:var(--white);padding:.3rem 0}
+.result-rows div b{color:var(--red-bright)}
+.result-close{position:relative;z-index:2;font-family:var(--impact);font-size:14px;letter-spacing:.1em;color:var(--red);background:var(--white);border:none;cursor:none;padding:.7rem 1.6rem;transform:skewX(-8deg);box-shadow:5px 5px 0 var(--black);margin-top:.6rem}
+.battle-hint{position:absolute;top:1.2rem;left:1.4rem;z-index:8;font-family:var(--impact);font-size:11px;letter-spacing:.1em;color:var(--grey)}
+#battle-quit{position:absolute;top:1.2rem;right:1.4rem;z-index:8;font-family:var(--impact);font-size:12px;color:#fff;background:#000;border:2px solid #fff;cursor:none;padding:.4rem .8rem;transform:skewX(-8deg)}
+
+/* ── RESPONSIVE ──────────────────────────────────────── */
 @media(max-width:600px){
-  #hud-nav{display:none}
-  #minimap{display:none}
-  .contact-box{padding:1.5rem}
-  .room{padding:4rem 1rem}
+  .hero-card{transform:none}
+  .b-bottom{flex-direction:column;align-items:stretch}
+  .cmd-menu{min-width:0}
 }
 
-/* ─── TYPING ANIMATION ───────────────────────────────────────── */
-.typewriter{overflow:hidden;white-space:nowrap;border-right:.15em solid var(--crimson)}
+/* click burst star */
+.burst{position:fixed;z-index:9997;pointer-events:none;color:var(--red-bright);font-size:22px;animation:burstfly .55s ease-out forwards}
+@keyframes burstfly{from{opacity:1;transform:translate(-50%,-50%) scale(.4) rotate(0)}to{opacity:0;transform:translate(-50%,-160%) scale(1.2) rotate(140deg)}}
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════════════════
-     INTRO / TITLE SCREEN
-═══════════════════════════════════════════════════════════════ -->
-<div id="intro">
-  <div class="intro-pixel">🗡️</div>
-  <div id="intro-logo">
-    PORTFOLIO QUEST<br/>
-    ════════════════<br/>
-    YAP JIA WEI
+<div id="cursor"></div>
+
+<!-- ════════════ TITLE / PRESS START ════════════ -->
+<div id="title">
+  <div class="title-card">
+    <div class="title-kanji">人生</div>
+    <div class="title-main">YAP<br/>JIA WEI</div>
+    <div class="title-sub">TAKE YOUR TIME</div>
   </div>
-  <div id="intro-sub">
-    NUS COMPUTER ENGINEERING · YEAR 2<br/>
-    ─── PRESS START TO BEGIN ───
-  </div>
-  <button id="start-btn" onclick="startGame()">► PRESS START</button>
-  <div id="load-bar-wrap"><div id="load-bar"></div></div>
+  <div class="shuffle-deck" id="deck"></div>
+  <button id="press-start"><span>► PRESS START ◄</span></button>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     HUD
-═══════════════════════════════════════════════════════════════ -->
-<div id="hud" style="display:none">
-  <div id="hud-name">⚔ JIA WEI · LVL 20</div>
-  <ul id="hud-nav">
-    <li><a href="#about">ABOUT</a></li>
-    <li><a href="#skills">SKILLS</a></li>
-    <li><a href="#projects">QUESTS</a></li>
-    <li><a href="#story">STORY</a></li>
-    <li><a href="#contact">CONTACT</a></li>
-  </ul>
-  <div id="hud-xp">XP: <span id="xp-counter">0</span>/1000</div>
-</div>
+<!-- ════════════ APP ════════════ -->
+<div id="app">
 
-<!-- ══════════════════════════════════════════════════════════
-     MINI MAP
-═══════════════════════════════════════════════════════════════ -->
-<div id="minimap" style="display:none">
-  <div class="mm-dot active" onclick="location.href='#hero'" title="HOME"></div>
-  <div class="mm-dot" onclick="location.href='#about'" title="ABOUT"></div>
-  <div class="mm-dot" onclick="location.href='#skills'" title="SKILLS"></div>
-  <div class="mm-dot" onclick="location.href='#projects'" title="QUESTS"></div>
-  <div class="mm-dot" onclick="location.href='#story'" title="STORY"></div>
-  <div class="mm-dot" onclick="location.href='#contact'" title="CONTACT"></div>
-</div>
-
-<!-- XP popup -->
-<div id="xp-popup">+50 XP — NEW AREA UNLOCKED!</div>
-
-<!-- ══════════════════════════════════════════════════════════
-     HERO
-═══════════════════════════════════════════════════════════════ -->
-<section id="hero" style="display:none">
-  <div id="hero-bg"></div>
-  <div class="pixel-grid"></div>
-
-  <div id="hero-content">
-    <div id="character-wrap">
-      <div class="char-name-tag">JAI_WEI ❤❤❤❤❤</div>
-      <div id="pixel-char">
-        <div id="ph"></div>
-        <div id="pb"></div>
-        <div id="pl"></div>
-      </div>
-    </div>
-
-    <div class="dialogue fade-in">
-      <p>Hey! I'm <span class="em">Jia Wei</span> — CE undergrad at <span class="gold">NUS</span>.<br/>
-      I build <span class="acc">real-time apps</span>, <span class="em">ML systems</span>, and once programmed a robot to shoot ping-pong balls autonomously. True story.<br/><br/>
-      Scroll down to explore my world. ↓<span class="blink">█</span></p>
-    </div>
+  <!-- HUD -->
+  <div id="hud">
+    <div id="hud-brand"><b>叶佳炜</b> // JIA WEI</div>
+    <button id="mask-btn" title="?">🎭</button>
   </div>
-</section>
+  <button id="menu-toggle">☰ MENU</button>
 
-<!-- ══════════════════════════════════════════════════════════
-     ABOUT
-═══════════════════════════════════════════════════════════════ -->
-<section id="about" style="display:none">
-  <div class="room">
-    <div class="room-label fade-in">ZONE 01 — PLAYER INFO</div>
-    <div class="room-title fade-in">Character Stats</div>
-    <div class="room-divider"></div>
+  <!-- SIDE MENU -->
+  <nav id="side-menu">
+    <button id="menu-close">✕ CLOSE</button>
+    <a class="menu-link" href="#hero">Home <i>主頁</i></a>
+    <a class="menu-link" href="#about">Status <i>状態</i></a>
+    <a class="menu-link" href="#skills">Arcana <i>能力</i></a>
+    <a class="menu-link" href="#projects">Targets <i>標的</i></a>
+    <a class="menu-link" href="#story">Ranks <i>記録</i></a>
+    <a class="menu-link" href="#contact">Contact <i>連絡</i></a>
+  </nav>
 
-    <div class="about-grid fade-in">
-      <div class="stat-card">
-        <h3>🎓 CLASS</h3>
-        <p>Computer Engineering, NUS<br/>Year 2 · 2023–2027</p>
+  <!-- ════════════ HERO ════════════ -->
+  <section id="hero">
+    <div class="hero-speed"></div>
+    <div class="hero-inner">
+      <div>
+        <div class="hero-codename">CODE NAME // THE BUILDER</div>
+        <h1 class="hero-name">YAP <span class="b2">JIA</span> WEI</h1>
+        <div class="hero-tag">COMPUTER ENGINEERING · NUS · YEAR 2</div>
+        <p class="hero-blurb">
+          Full-stack &amp; <b>ML developer</b> who ships real-time apps, agentic AI, and once
+          programmed a robot to <b>autonomously shoot ping-pong balls</b>. I steal one thing only:
+          <b>your time, well spent.</b>
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-red" href="#projects"><span>► VIEW TARGETS</span></a>
+          <a class="btn btn-ghost" href="#contact"><span>SEND CALLING CARD</span></a>
+        </div>
       </div>
-      <div class="stat-card">
-        <h3>📍 LOCATION</h3>
-        <p>Singapore 🇸🇬<br/>Available for internships</p>
-      </div>
-      <div class="stat-card">
-        <h3>⚔ MAIN ROLE</h3>
-        <p>Full-Stack Developer<br/>+ ML Engineer</p>
-      </div>
-      <div class="stat-card">
-        <h3>🏆 ACHIEVEMENTS</h3>
-        <p>Hackathon Semifinalist<br/>NUS Orbital Apollo 11</p>
+      <div class="hero-card">
+        <div class="hero-card-tag">PHANTOM // DEV</div>
+        <div class="hero-mask">🎭</div>
+        <div class="hero-card-name">JIA WEI</div>
+        <div class="hero-card-role">FULL-STACK · ML · ROBOTICS</div>
       </div>
     </div>
+    <div class="scroll-hint">SCROLL<br/>▼</div>
+  </section>
 
-    <div class="fun-fact fade-in">
-      ▶ FUN FACTS<br/>
-      <span>▸</span> I named my GitHub heeelol — yes, on purpose.<br/>
-      <span>▸</span> My robot scored direct hits from 2m away on the first real run.<br/>
-      <span>▸</span> I once debugged a Socket.IO race condition at 3AM and felt great about it.<br/>
-      <span>▸</span> I think good READMEs are an underrated form of art.
+  <!-- ════════════ ABOUT / STATUS ════════════ -->
+  <section id="about" class="zone">
+    <div class="zone-head reveal">
+      <div class="zone-kicker">ZONE 01 — CONFIDANT</div>
+      <h2 class="zone-title">PLAYER <em>STATUS</em></h2>
+      <div class="zone-jp">ステータス</div>
     </div>
-  </div>
-</section>
+    <div class="status-wrap">
+      <div class="status-panel reveal">
+        <h3>SOCIAL STATS</h3>
+        <div class="stat-row"><div class="stat-name">Knowledge<small>知識</small></div><div class="stat-stars">★★★★★</div></div>
+        <div class="stat-row"><div class="stat-name">Proficiency<small>器用さ</small></div><div class="stat-stars">★★★★<i>★</i></div></div>
+        <div class="stat-row"><div class="stat-name">Guts<small>度胸</small></div><div class="stat-stars">★★★★<i>★</i></div></div>
+        <div class="stat-row"><div class="stat-name">Kindness<small>優しさ</small></div><div class="stat-stars">★★★★<i>★</i></div></div>
+        <div class="stat-row"><div class="stat-name">Charm<small>魅力</small></div><div class="stat-stars">★★★<i>★★</i></div></div>
+      </div>
+      <div class="bio reveal">
+        <h3>Hey, I'm Jia Wei.</h3>
+        <p>CE undergrad at <strong>NUS</strong> who builds <strong>real-time apps</strong>,
+          <strong>ML systems</strong>, and the occasional autonomous robot. I like clean code,
+          tight feedback loops, and shipping things people actually use.</p>
+        <p>Currently: <strong>available for internships in 2026</strong> (SWE / ML / Full-stack).</p>
+        <ul class="facts">
+          <li>Named my GitHub <strong>heeelol</strong> — yes, on purpose.</li>
+          <li>My robot scored direct hits from 2m away on the first real run.</li>
+          <li>Debugged a Socket.IO race condition at 3AM and felt great about it.</li>
+          <li>I think good READMEs are an underrated form of art.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
 
-<!-- ══════════════════════════════════════════════════════════
-     SKILLS
-═══════════════════════════════════════════════════════════════ -->
-<section id="skills" style="display:none">
-  <div class="room">
-    <div class="room-label fade-in">ZONE 02 — ABILITY TREE</div>
-    <div class="room-title fade-in">Skill Loadout</div>
-    <div class="room-divider"></div>
+  <!-- ════════════ SKILLS / ARCANA ════════════ -->
+  <section id="skills" class="zone">
+    <div class="zone-head reveal">
+      <div class="zone-kicker">ZONE 02 — ARCANA</div>
+      <h2 class="zone-title">SKILL <em>LOADOUT</em></h2>
+      <div class="zone-jp">アルカナ</div>
+    </div>
+    <div class="arcana-grid">
 
-    <div class="skill-tree fade-in">
-
-      <div class="skill-branch">
-        <div class="skill-branch-title">⚡ Languages</div>
-        <div>
-          <span class="skill-tag hot">Python</span>
-          <span class="skill-tag hot">JavaScript</span>
-          <span class="skill-tag">Java</span>
-          <span class="skill-tag">C++</span>
-          <span class="skill-tag">TypeScript</span>
+      <div class="arcana reveal">
+        <div class="arcana-no">0 — THE FOOL</div>
+        <div class="arcana-name"><span>⚡</span> LANGUAGES</div>
+        <div class="tags">
+          <span class="tag hot"><span>Python</span></span><span class="tag hot"><span>JavaScript</span></span>
+          <span class="tag"><span>TypeScript</span></span><span class="tag"><span>Java</span></span><span class="tag"><span>C++</span></span>
         </div>
-        <div class="xp-bar-wrap">
-          <div class="xp-label">PROFICIENCY</div>
-          <div class="xp-bar" data-width="85"></div>
-        </div>
+        <div class="prof"><i data-w="88"></i></div><div class="prof-label">PROFICIENCY</div>
       </div>
 
-      <div class="skill-branch">
-        <div class="skill-branch-title">🖥 Frontend</div>
-        <div>
-          <span class="skill-tag hot">React</span>
-          <span class="skill-tag hot">TailwindCSS</span>
-          <span class="skill-tag">Vite</span>
-          <span class="skill-tag">HTML/CSS</span>
-          <span class="skill-tag">Recharts</span>
+      <div class="arcana reveal">
+        <div class="arcana-no">I — THE MAGICIAN</div>
+        <div class="arcana-name"><span>🖥</span> FRONTEND</div>
+        <div class="tags">
+          <span class="tag hot"><span>React</span></span><span class="tag hot"><span>Tailwind</span></span>
+          <span class="tag"><span>Vite</span></span><span class="tag"><span>HTML/CSS</span></span><span class="tag"><span>Recharts</span></span>
         </div>
-        <div class="xp-bar-wrap">
-          <div class="xp-label">PROFICIENCY</div>
-          <div class="xp-bar" data-width="80"></div>
-        </div>
+        <div class="prof"><i data-w="82"></i></div><div class="prof-label">PROFICIENCY</div>
       </div>
 
-      <div class="skill-branch">
-        <div class="skill-branch-title">⚙ Backend</div>
-        <div>
-          <span class="skill-tag hot">Node.js</span>
-          <span class="skill-tag hot">Express</span>
-          <span class="skill-tag hot">Socket.IO</span>
-          <span class="skill-tag">FastAPI</span>
-          <span class="skill-tag">REST APIs</span>
-          <span class="skill-tag">JWT Auth</span>
+      <div class="arcana reveal">
+        <div class="arcana-no">II — THE PRIESTESS</div>
+        <div class="arcana-name"><span>⚙</span> BACKEND</div>
+        <div class="tags">
+          <span class="tag hot"><span>Node.js</span></span><span class="tag hot"><span>Express</span></span><span class="tag hot"><span>Socket.IO</span></span>
+          <span class="tag"><span>FastAPI</span></span><span class="tag"><span>REST</span></span><span class="tag"><span>JWT</span></span>
         </div>
-        <div class="xp-bar-wrap">
-          <div class="xp-label">PROFICIENCY</div>
-          <div class="xp-bar" data-width="78"></div>
-        </div>
+        <div class="prof"><i data-w="80"></i></div><div class="prof-label">PROFICIENCY</div>
       </div>
 
-      <div class="skill-branch">
-        <div class="skill-branch-title">🗄 Data & ML</div>
-        <div>
-          <span class="skill-tag hot">scikit-learn</span>
-          <span class="skill-tag">Pandas</span>
-          <span class="skill-tag">NumPy</span>
-          <span class="skill-tag">Jupyter</span>
-          <span class="skill-tag">LLM Integration</span>
-          <span class="skill-tag">NLP</span>
+      <div class="arcana reveal">
+        <div class="arcana-no">III — THE EMPRESS</div>
+        <div class="arcana-name"><span>🧠</span> DATA &amp; ML</div>
+        <div class="tags">
+          <span class="tag hot"><span>scikit-learn</span></span><span class="tag"><span>Pandas</span></span><span class="tag"><span>NumPy</span></span>
+          <span class="tag"><span>LLMs</span></span><span class="tag"><span>NLP</span></span>
         </div>
-        <div class="xp-bar-wrap">
-          <div class="xp-label">PROFICIENCY</div>
-          <div class="xp-bar" data-width="72"></div>
-        </div>
+        <div class="prof"><i data-w="74"></i></div><div class="prof-label">PROFICIENCY</div>
       </div>
 
-      <div class="skill-branch">
-        <div class="skill-branch-title">🤖 Robotics</div>
-        <div>
-          <span class="skill-tag hot">ROS2</span>
-          <span class="skill-tag">OpenCV</span>
-          <span class="skill-tag">LiDAR / SLAM</span>
-          <span class="skill-tag">Raspberry Pi</span>
-          <span class="skill-tag">ArUco</span>
+      <div class="arcana reveal">
+        <div class="arcana-no">IV — THE EMPEROR</div>
+        <div class="arcana-name"><span>🤖</span> ROBOTICS</div>
+        <div class="tags">
+          <span class="tag hot"><span>ROS2</span></span><span class="tag"><span>OpenCV</span></span><span class="tag"><span>SLAM</span></span>
+          <span class="tag"><span>Raspberry Pi</span></span><span class="tag"><span>ArUco</span></span>
         </div>
-        <div class="xp-bar-wrap">
-          <div class="xp-label">PROFICIENCY</div>
-          <div class="xp-bar" data-width="65"></div>
-        </div>
+        <div class="prof"><i data-w="68"></i></div><div class="prof-label">PROFICIENCY</div>
       </div>
 
-      <div class="skill-branch">
-        <div class="skill-branch-title">🛠 Tools & Infra</div>
-        <div>
-          <span class="skill-tag">MongoDB</span>
-          <span class="skill-tag">Git</span>
-          <span class="skill-tag">GitHub Actions</span>
-          <span class="skill-tag">AWS</span>
-          <span class="skill-tag">Vercel</span>
-          <span class="skill-tag">Figma</span>
+      <div class="arcana reveal">
+        <div class="arcana-no">V — THE HIEROPHANT</div>
+        <div class="arcana-name"><span>🛠</span> TOOLS &amp; INFRA</div>
+        <div class="tags">
+          <span class="tag"><span>MongoDB</span></span><span class="tag"><span>Git</span></span><span class="tag"><span>GH Actions</span></span>
+          <span class="tag"><span>AWS</span></span><span class="tag"><span>Vercel</span></span><span class="tag"><span>Figma</span></span>
         </div>
-        <div class="xp-bar-wrap">
-          <div class="xp-label">PROFICIENCY</div>
-          <div class="xp-bar" data-width="75"></div>
-        </div>
+        <div class="prof"><i data-w="76"></i></div><div class="prof-label">PROFICIENCY</div>
       </div>
 
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ══════════════════════════════════════════════════════════
-     PROJECTS / QUEST BOARD
-═══════════════════════════════════════════════════════════════ -->
-<section id="projects" style="display:none">
-  <div class="room">
-    <div class="room-label fade-in">ZONE 03 — QUEST BOARD</div>
-    <div class="room-title fade-in">Completed Quests</div>
-    <div class="room-divider"></div>
+  <!-- ════════════ PROJECTS / TARGETS ════════════ -->
+  <section id="projects" class="zone">
+    <div class="zone-head reveal">
+      <div class="zone-kicker">ZONE 03 — HEIST TARGETS</div>
+      <h2 class="zone-title">CALLING <em>CARDS</em></h2>
+      <div class="zone-jp">予告状</div>
+    </div>
+    <div class="cards">
 
-    <div class="quest-board fade-in">
-
-      <!-- BrainBrawl -->
-      <div class="quest-card" onclick="window.open('https://github.com/heeelol/BrainBrawl','_blank')">
-        <div class="quest-header">
-          🎮 BRAINBRAWL
-          <span class="quest-rank">★★★ EPIC</span>
+      <div class="card reveal" data-link="https://github.com/heeelol/BrainBrawl">
+        <div class="card-rank">★★★ EPIC</div>
+        <div class="card-badge">APOLLO 11</div>
+        <h3>🎮 <em>BrainBrawl</em></h3>
+        <p>Real-time 1v1 quiz battle platform. MERN + Socket.IO multiplayer, XP system, global leaderboard, and a cosmetic shop. NUS Orbital Apollo 11.</p>
+        <div class="card-tags">
+          <span class="ct"><span>React</span></span><span class="ct"><span>Node</span></span><span class="ct"><span>MongoDB</span></span>
+          <span class="ct"><span>Socket.IO</span></span><span class="ct"><span>Cypress</span></span><span class="ct"><span>JWT</span></span>
         </div>
-        <div class="quest-body">
-          <p class="quest-desc">Real-time 1v1 quiz battle platform. MERN stack with Socket.IO multiplayer, XP system, global leaderboard, and a cosmetic shop. NUS Orbital Apollo 11 achievement.</p>
-          <div class="quest-tags">
-            <span class="q-tag">React</span>
-            <span class="q-tag">Node.js</span>
-            <span class="q-tag">MongoDB</span>
-            <span class="q-tag">Socket.IO</span>
-            <span class="q-tag">Cypress</span>
-            <span class="q-tag">JWT</span>
-            <span class="q-tag">Vercel</span>
-          </div>
-          <div class="quest-reward">🏆 REWARD: Apollo 11 · Live Deployment</div>
-          <a class="quest-link" href="https://brainbrawl-frontend.vercel.app/" onclick="event.stopPropagation()" target="_blank">▶ PLAY LIVE DEMO</a>
-          <a class="quest-link" href="https://github.com/heeelol/BrainBrawl" onclick="event.stopPropagation()" target="_blank">⌥ VIEW CODE</a>
+        <div class="card-reward">▸ REWARD: Apollo 11 · Live Deployment</div>
+        <div class="card-links">
+          <a class="clink" href="https://brainbrawl-frontend.vercel.app/" target="_blank" rel="noopener" data-stop><span>► PLAY LIVE</span></a>
+          <a class="clink alt" href="https://github.com/heeelol/BrainBrawl" target="_blank" rel="noopener" data-stop><span>CODE</span></a>
         </div>
       </div>
 
-      <!-- Rubrix AI -->
-      <div class="quest-card" onclick="window.open('https://github.com/heeelol/Rubrix-AI','_blank')">
-        <div class="badge-hackathon">🥈 SEMIFINALIST</div>
-        <div class="quest-header">
-          🧠 RUBRIX AI
-          <span class="quest-rank">★★★ EPIC</span>
+      <div class="card reveal" data-link="https://github.com/heeelol/Rubrix-AI">
+        <div class="card-rank">★★★ EPIC</div>
+        <div class="card-badge">🥈 SEMIFINALIST</div>
+        <h3>🧠 <em>Rubrix AI</em></h3>
+        <p>Agentic AI learning assistant — SimplifyNext Hackathon (AWS). True agentic loop: PLAN → ACT → ADAPT. Personalised homework from uploaded assignments.</p>
+        <div class="card-tags">
+          <span class="ct"><span>Python</span></span><span class="ct"><span>Node</span></span><span class="ct"><span>LLM</span></span>
+          <span class="ct"><span>AWS</span></span><span class="ct"><span>React</span></span>
         </div>
-        <div class="quest-body">
-          <p class="quest-desc">Agentic AI learning assistant — SimplifyNext Hackathon (AWS Partnership). True agentic loop: PLAN → ACT → ADAPT. Personalised homework generation from uploaded assignments.</p>
-          <div class="quest-tags">
-            <span class="q-tag">Python</span>
-            <span class="q-tag">Node.js</span>
-            <span class="q-tag">LLM</span>
-            <span class="q-tag">AWS</span>
-            <span class="q-tag">React</span>
-            <span class="q-tag">Recharts</span>
-          </div>
-          <div class="quest-reward">🏆 REWARD: Hackathon Semifinalist · AWS Partnership</div>
-          <a class="quest-link" href="https://github.com/heeelol/Rubrix-AI" onclick="event.stopPropagation()" target="_blank">⌥ VIEW CODE</a>
+        <div class="card-reward">▸ REWARD: Semifinalist · AWS Partnership</div>
+        <div class="card-links">
+          <a class="clink" href="https://github.com/heeelol/Rubrix-AI" target="_blank" rel="noopener" data-stop><span>► VIEW CODE</span></a>
         </div>
       </div>
 
-      <!-- F1 Predictor -->
-      <div class="quest-card" onclick="window.open('https://github.com/heeelol/F1-Race-Predictor','_blank')">
-        <div class="quest-header">
-          🏎 F1 RACE PREDICTOR
-          <span class="quest-rank">★★☆ RARE</span>
+      <div class="card reveal" data-link="https://github.com/heeelol/F1-Race-Predictor">
+        <div class="card-rank">★★☆ RARE</div>
+        <div class="card-badge">ML</div>
+        <h3>🏎 <em>F1 Predictor</em></h3>
+        <p>ML web app predicting F1 finishing positions via Gradient Boosting on 10 years of data. FastF1 API backend with real-time qualifying fetches.</p>
+        <div class="card-tags">
+          <span class="ct"><span>Python</span></span><span class="ct"><span>scikit-learn</span></span><span class="ct"><span>FastF1</span></span>
+          <span class="ct"><span>React</span></span><span class="ct"><span>FastAPI</span></span>
         </div>
-        <div class="quest-body">
-          <p class="quest-desc">ML web app predicting F1 finishing positions using Gradient Boosting trained on 10 years of data. FastF1 API backend with real-time qualifying data fetching.</p>
-          <div class="quest-tags">
-            <span class="q-tag">Python</span>
-            <span class="q-tag">scikit-learn</span>
-            <span class="q-tag">FastF1</span>
-            <span class="q-tag">React</span>
-            <span class="q-tag">Vite</span>
-            <span class="q-tag">FastAPI</span>
-          </div>
-          <div class="quest-reward">🏆 REWARD: 2★ GitHub Stars · Video Demo</div>
-          <a class="quest-link" href="https://youtu.be/qfJKhu7rrgY" onclick="event.stopPropagation()" target="_blank">▶ WATCH DEMO</a>
-          <a class="quest-link" href="https://github.com/heeelol/F1-Race-Predictor" onclick="event.stopPropagation()" target="_blank">⌥ VIEW CODE</a>
+        <div class="card-reward">▸ REWARD: GitHub Stars · Video Demo</div>
+        <div class="card-links">
+          <a class="clink" href="https://youtu.be/qfJKhu7rrgY" target="_blank" rel="noopener" data-stop><span>► WATCH</span></a>
+          <a class="clink alt" href="https://github.com/heeelol/F1-Race-Predictor" target="_blank" rel="noopener" data-stop><span>CODE</span></a>
         </div>
       </div>
 
-      <!-- Robot -->
-      <div class="quest-card" onclick="window.open('https://github.com/heeelol/CDE2310_G10_2526','_blank')">
-        <div class="quest-header">
-          🤖 AUTONOMOUS ROBOT
-          <span class="quest-rank">★★★ EPIC</span>
+      <div class="card reveal" data-link="https://github.com/heeelol/CDE2310_G10_2526">
+        <div class="card-rank">★★★ EPIC</div>
+        <div class="card-badge">PHYSICAL</div>
+        <h3>🤖 <em>Autonomous Robot</em></h3>
+        <p>ROS2 robot with LiDAR SLAM, frontier exploration, ArUco detection, and a 3D-printed spring launcher. Deployed in a warehouse maze. 363 commits.</p>
+        <div class="card-tags">
+          <span class="ct"><span>ROS2</span></span><span class="ct"><span>Python</span></span><span class="ct"><span>C++</span></span>
+          <span class="ct"><span>OpenCV</span></span><span class="ct"><span>SLAM</span></span>
         </div>
-        <div class="quest-body">
-          <p class="quest-desc">ROS2 robot with LiDAR SLAM, frontier exploration, ArUco marker detection, and a 3D-printed spring-loaded launcher. Deployed physically in a warehouse maze. 363 commits.</p>
-          <div class="quest-tags">
-            <span class="q-tag">ROS2</span>
-            <span class="q-tag">Python</span>
-            <span class="q-tag">C++</span>
-            <span class="q-tag">OpenCV</span>
-            <span class="q-tag">SLAM</span>
-            <span class="q-tag">Raspberry Pi</span>
-          </div>
-          <div class="quest-reward">🏆 REWARD: Physical Robot Deployed · GitHub Pages Docs</div>
-          <a class="quest-link" href="https://kmyming.github.io/CDE2310_G10_2526/" onclick="event.stopPropagation()" target="_blank">▶ VIEW DOCS</a>
-          <a class="quest-link" href="https://github.com/heeelol/CDE2310_G10_2526" onclick="event.stopPropagation()" target="_blank">⌥ VIEW CODE</a>
+        <div class="card-reward">▸ REWARD: Robot Deployed · Docs Live</div>
+        <div class="card-links">
+          <a class="clink" href="https://kmyming.github.io/CDE2310_G10_2526/" target="_blank" rel="noopener" data-stop><span>► DOCS</span></a>
+          <a class="clink alt" href="https://github.com/heeelol/CDE2310_G10_2526" target="_blank" rel="noopener" data-stop><span>CODE</span></a>
         </div>
       </div>
 
-      <!-- Sift -->
-      <div class="quest-card" onclick="window.open('https://github.com/heeelol/Sift','_blank')">
-        <div class="quest-header">
-          🔍 SIFT — AI REVIEW FILTER
-          <span class="quest-rank">★★☆ RARE</span>
+      <div class="card reveal" data-link="https://github.com/heeelol/Sift">
+        <div class="card-rank">★★☆ RARE</div>
+        <div class="card-badge">NLP</div>
+        <h3>🔍 <em>Sift</em></h3>
+        <p>LLM-powered spam review detector. Hybrid TF-IDF + regex + open-source LLM pipeline. Scrapes Google Maps, classifies authentic vs. spam in real time.</p>
+        <div class="card-tags">
+          <span class="ct"><span>Python</span></span><span class="ct"><span>LLM</span></span><span class="ct"><span>NLP</span></span>
+          <span class="ct"><span>TF-IDF</span></span><span class="ct"><span>Pandas</span></span>
         </div>
-        <div class="quest-body">
-          <p class="quest-desc">LLM-powered spam review detector. Hybrid TF-IDF + regex + open-source LLM classification pipeline. Scrapes Google Maps, classifies authentic vs. spam in real time.</p>
-          <div class="quest-tags">
-            <span class="q-tag">Python</span>
-            <span class="q-tag">LLM</span>
-            <span class="q-tag">NLP</span>
-            <span class="q-tag">TF-IDF</span>
-            <span class="q-tag">Apify</span>
-            <span class="q-tag">Pandas</span>
-          </div>
-          <div class="quest-reward">🏆 REWARD: Course Top Project · Team APXGP</div>
-          <a class="quest-link" href="https://github.com/heeelol/Sift" onclick="event.stopPropagation()" target="_blank">⌥ VIEW CODE</a>
+        <div class="card-reward">▸ REWARD: Course Top Project · Team APXGP</div>
+        <div class="card-links">
+          <a class="clink" href="https://github.com/heeelol/Sift" target="_blank" rel="noopener" data-stop><span>► VIEW CODE</span></a>
         </div>
       </div>
 
-      <!-- ModuleSync -->
-      <div class="quest-card" onclick="window.open('https://github.com/heeelol/tp','_blank')">
-        <div class="quest-header">
-          📚 MODULESYNC
-          <span class="quest-rank">★★☆ RARE</span>
+      <div class="card reveal" data-link="https://github.com/heeelol/tp">
+        <div class="card-rank">★★☆ RARE</div>
+        <div class="card-badge">OOP</div>
+        <h3>📚 <em>ModuleSync</em></h3>
+        <p>Java CLI task manager for NUS students. Full OOP design, Gradle automation, Checkstyle, JUnit + text-UI testing, CI/CD with GitHub Actions. 342 commits.</p>
+        <div class="card-tags">
+          <span class="ct"><span>Java</span></span><span class="ct"><span>OOP</span></span><span class="ct"><span>Gradle</span></span>
+          <span class="ct"><span>JUnit</span></span><span class="ct"><span>CI/CD</span></span>
         </div>
-        <div class="quest-body">
-          <p class="quest-desc">Java CLI task manager for NUS students. Full OOP design, Gradle automation, Checkstyle enforcement, JUnit + text-UI testing, CI/CD with GitHub Actions. 342 commits.</p>
-          <div class="quest-tags">
-            <span class="q-tag">Java</span>
-            <span class="q-tag">OOP</span>
-            <span class="q-tag">Gradle</span>
-            <span class="q-tag">JUnit</span>
-            <span class="q-tag">GitHub Actions</span>
-          </div>
-          <div class="quest-reward">🏆 REWARD: CS2113 Team Project · Automated CI</div>
-          <a class="quest-link" href="https://github.com/heeelol/tp" onclick="event.stopPropagation()" target="_blank">⌥ VIEW CODE</a>
+        <div class="card-reward">▸ REWARD: CS2113 Team Project · Automated CI</div>
+        <div class="card-links">
+          <a class="clink" href="https://github.com/heeelol/tp" target="_blank" rel="noopener" data-stop><span>► VIEW CODE</span></a>
         </div>
       </div>
 
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ══════════════════════════════════════════════════════════
-     STORY / TIMELINE
-═══════════════════════════════════════════════════════════════ -->
-<section id="story" style="display:none">
-  <div class="room">
-    <div class="room-label fade-in">ZONE 04 — ORIGIN STORY</div>
-    <div class="room-title fade-in">The Journey So Far</div>
-    <div class="room-divider"></div>
-
+  <!-- ════════════ STORY / RANKS ════════════ -->
+  <section id="story" class="zone">
+    <div class="zone-head reveal">
+      <div class="zone-kicker">ZONE 04 — CONFIDANT RANKS</div>
+      <h2 class="zone-title">THE <em>JOURNEY</em></h2>
+      <div class="zone-jp">これまでの軌跡</div>
+    </div>
     <div class="timeline">
-      <div class="tl-item fade-in">
-        <div class="tl-year">2023</div>
-        <div class="tl-title">⚔ Enrolled at NUS — Computer Engineering</div>
-        <div class="tl-desc">Started the adventure. Wrote my first Java class. Survived the first CS module. Discovered I actually enjoy building things from scratch.</div>
+      <div class="tl reveal" data-rank="1">
+        <div class="tl-yr">2023</div>
+        <div class="tl-t">Enrolled at NUS — Computer Engineering</div>
+        <div class="tl-d">Started the adventure. Wrote my first Java class, survived the first CS module, and discovered I actually enjoy building things from scratch.</div>
       </div>
-      <div class="tl-item fade-in">
-        <div class="tl-year">2024 · SEM 1</div>
-        <div class="tl-title">🧠 First Hackathon — Sift (AI Review Filter)</div>
-        <div class="tl-desc">Built a hybrid LLM + TF-IDF review spam detector. Learned that NLP is both fascinating and humbling at the same time.</div>
+      <div class="tl reveal" data-rank="2">
+        <div class="tl-yr">2024 · SEM 1</div>
+        <div class="tl-t">First Hackathon — Sift</div>
+        <div class="tl-d">Built a hybrid LLM + TF-IDF review spam detector. Learned that NLP is both fascinating and humbling at the same time.</div>
       </div>
-      <div class="tl-item fade-in">
-        <div class="tl-year">2024 · SEM 2</div>
-        <div class="tl-title">🏎 F1 Race Predictor — First ML Full-Stack Project</div>
-        <div class="tl-desc">Built a Gradient Boosting model trained on 10 years of F1 data + a React frontend. First time combining ML with a real production UI.</div>
+      <div class="tl reveal" data-rank="3">
+        <div class="tl-yr">2024 · SEM 2</div>
+        <div class="tl-t">F1 Race Predictor — First ML Full-Stack</div>
+        <div class="tl-d">A Gradient Boosting model on 10 years of F1 data plus a React frontend. First time combining ML with a real production UI.</div>
       </div>
-      <div class="tl-item fade-in">
-        <div class="tl-year">2025 · SUMMER</div>
-        <div class="tl-title">🚀 NUS Orbital — BrainBrawl (Apollo 11)</div>
-        <div class="tl-desc">Three months building a full-stack real-time quiz battle platform with my teammate. Real users, real feedback, live deployment on Vercel. Achieved Apollo 11 — the top tier.</div>
+      <div class="tl reveal" data-rank="4">
+        <div class="tl-yr">2025 · SUMMER</div>
+        <div class="tl-t">NUS Orbital — BrainBrawl (Apollo 11)</div>
+        <div class="tl-d">Three months building a full-stack real-time quiz platform. Real users, real feedback, live on Vercel. Reached Apollo 11 — the top tier.</div>
       </div>
-      <div class="tl-item fade-in">
-        <div class="tl-year">2025 · SEM 1</div>
-        <div class="tl-title">🥈 SimplifyNext Hackathon — Rubrix AI Semifinalist</div>
-        <div class="tl-desc">Built an agentic AI tutoring assistant with AWS in 48 hours. Made it to the semifinals. Learned that agents are only as good as their loops.</div>
+      <div class="tl reveal" data-rank="5">
+        <div class="tl-yr">2025 · SEM 1</div>
+        <div class="tl-t">SimplifyNext Hackathon — Rubrix AI Semifinalist</div>
+        <div class="tl-d">An agentic AI tutoring assistant with AWS in 48 hours. Made the semifinals. Learned that agents are only as good as their loops.</div>
       </div>
-      <div class="tl-item fade-in">
-        <div class="tl-year">2025–2026</div>
-        <div class="tl-title">🤖 CDE2310 — Autonomous Robot Project</div>
-        <div class="tl-desc">Built a physical ROS2 robot from scratch. LiDAR SLAM, frontier mapping, ArUco detection, and a spring-loaded launcher that actually works. 363 commits with a team of 6.</div>
+      <div class="tl reveal" data-rank="6">
+        <div class="tl-yr">2025–2026</div>
+        <div class="tl-t">CDE2310 — Autonomous Robot</div>
+        <div class="tl-d">A physical ROS2 robot from scratch. LiDAR SLAM, frontier mapping, ArUco detection, and a spring launcher that actually works. 363 commits, team of 6.</div>
       </div>
-      <div class="tl-item fade-in">
-        <div class="tl-year">NOW</div>
-        <div class="tl-title">👾 Looking for: Internship (SWE / ML / Fullstack)</div>
-        <div class="tl-desc">Ready to bring this energy to a real team. Open to summer 2026 and beyond. Let's build something cool.</div>
+      <div class="tl reveal" data-rank="★">
+        <div class="tl-yr">NOW</div>
+        <div class="tl-t">Looking For: Internship (SWE / ML / Full-stack)</div>
+        <div class="tl-d">Ready to bring this energy to a real team. Open to summer 2026 and beyond. Let's build something cool.</div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ══════════════════════════════════════════════════════════
-     CONTACT
-═══════════════════════════════════════════════════════════════ -->
-<section id="contact" style="display:none">
-  <div class="room">
-    <div class="room-label fade-in">ZONE 05 — FINAL ROOM</div>
-    <div class="room-title fade-in">Send a Message</div>
-    <div class="room-divider"></div>
-
-    <div class="contact-box fade-in">
-      <div class="avail-badge">
-        <div class="avail-dot"></div>
-        AVAILABLE FOR INTERNSHIPS · 2026
+  <!-- ════════════ CONTACT ════════════ -->
+  <section id="contact" class="zone">
+    <div class="zone-head reveal" style="text-align:center">
+      <div class="zone-kicker" style="justify-content:center">ZONE 05 — CALLING CARD</div>
+      <h2 class="zone-title">GET IN <em>TOUCH</em></h2>
+      <div class="zone-jp">連絡先</div>
+    </div>
+    <div class="ransom reveal">
+      <div class="avail"><span class="dot"></span> AVAILABLE FOR INTERNSHIPS · 2026</div>
+      <div class="ransom-head">SEND A <em>CALLING CARD</em></div>
+      <div class="ransom-sub">I respond fast. I don't ghost. I bring snacks to meetings (if remote counts).</div>
+      <div class="contact-links">
+        <a class="crow" href="https://www.linkedin.com/in/yap-jia-wei-%E5%8F%B6%E4%BD%B3%E7%82%9C-5186a5348/" target="_blank" rel="noopener"><span class="ico">💼</span> LINKEDIN — yap-jia-wei</a>
+        <a class="crow" href="https://github.com/heeelol" target="_blank" rel="noopener"><span class="ico">🐙</span> GITHUB — heeelol</a>
+        <a class="crow" href="mailto:yapjiawei@u.nus.edu"><span class="ico">📬</span> EMAIL — yapjiawei@u.nus.edu</a>
       </div>
+      <div class="ransom-foot">— We will take your codebase. Sincerely, The Phantom Dev. 🎭</div>
+    </div>
+  </section>
 
-      <a class="contact-link" href="https://www.linkedin.com/in/yap-jia-wei-%E5%8F%B6%E4%BD%B3%E7%82%9C-5186a5348/" target="_blank">
-        <span class="cl-icon">💼</span>
-        LINKEDIN — yap-jia-wei
-      </a>
-      <a class="contact-link" href="https://github.com/heeelol" target="_blank">
-        <span class="cl-icon">🐙</span>
-        GITHUB — heeelol
-      </a>
-      <a class="contact-link" href="mailto:yapjiawei@u.nus.edu" target="_blank">
-        <span class="cl-icon">📬</span>
-        EMAIL — yapjiawei@u.nus.edu
-      </a>
+  <footer>
+    <p>BUILT WITH <span>♥</span> &amp; TOO MUCH COFFEE · YAP JIA WEI · 2026</p>
+    <p style="margin-top:.4rem">PSST — TRY THE <span>🎭 MASK</span> UP TOP. OR THE KONAMI CODE.</p>
+    <div class="jp">叶佳炜</div>
+  </footer>
+</div>
 
-      <p style="font-family:var(--pixel);font-size:7px;color:var(--muted);margin-top:1.5rem;line-height:2.5">
-        I respond fast. I don't ghost. I bring snacks to meetings if remote counts.
-      </p>
+<!-- ════════════ BATTLE EASTER EGG ════════════ -->
+<div id="battle">
+  <div class="battle-hint">SHADOW ENCOUNTER // HIT A WEAKNESS TO KNOCK DOWN</div>
+  <button id="battle-quit">✕ ESCAPE</button>
+
+  <div class="b-top">
+    <div class="enemy" id="enemy">👹</div>
+    <div class="enemy-name">SHADOW: SELF-DOUBT<small>シャドウ</small></div>
+    <div class="enemy-hp-wrap"><div class="enemy-hp" id="enemy-hp"></div></div>
+    <div class="enemy-hp-text" id="enemy-hp-text">HP 120 / 120</div>
+  </div>
+
+  <div id="b-banner"></div>
+
+  <div class="b-bottom">
+    <div class="player-stat">
+      <div class="pname">JIA WEI</div>
+      <div class="bar hp"><i id="p-hp" style="width:100%"></i></div>
+      <div class="bar-label" id="p-hp-label">HP 80 / 80</div>
+      <div class="bar sp"><i id="p-sp" style="width:100%"></i></div>
+      <div class="bar-label" id="p-sp-label">SP 40 / 40</div>
+    </div>
+
+    <div class="cmd-menu" id="cmd-menu">
+      <button class="cmd" data-act="attack"><span>ATTACK</span><small>melee</small></button>
+      <button class="cmd" data-act="skill"><span>AGILAO 🔥</span><small>12 SP · weakness</small></button>
+      <button class="cmd" data-act="gun"><span>GUN</span><small>3 ammo</small></button>
+      <button class="cmd" data-act="guard"><span>GUARD</span><small>heal + brace</small></button>
     </div>
   </div>
-</section>
 
-<!-- ══════════════════════════════════════════════════════════
-     FOOTER
-═══════════════════════════════════════════════════════════════ -->
-<footer style="display:none" id="footer">
-  <p>BUILT WITH <span>♥</span> AND TOO MUCH COFFEE BY YAP JIA WEI · 2026</p>
-  <p style="margin-top:0.5rem">NO FRAMEWORKS WERE HARMED IN THE MAKING OF THIS PAGE</p>
-</footer>
+  <!-- VICTORY -->
+  <div id="result">
+    <div class="result-mask">🎭</div>
+    <div class="result-win">VICTORY</div>
+    <div class="result-rows">
+      <div>RESULT <b>ALL-OUT ATTACK</b></div>
+      <div>EXP GAINED <b id="r-exp">+9999</b></div>
+      <div>MONEY <b id="r-money">¥7,777</b></div>
+      <div>ITEM <b>OFFER LETTER ✦</b></div>
+    </div>
+    <button class="result-close" id="result-close"><span>► CONTINUE</span></button>
+  </div>
+</div>
 
-<!-- ══════════════════════════════════════════════════════════
-     SCRIPTS
-═══════════════════════════════════════════════════════════════ -->
+<!-- ════════════ SCRIPTS ════════════ -->
 <script>
-/* ── STARS ─────────────────────────────────────────── */
-function makeStars(){
-  const hero=document.getElementById('hero');
-  for(let i=0;i<60;i++){
+/* ── CUSTOM CURSOR ─────────────────────────────── */
+const cursor=document.getElementById('cursor');
+let cx=innerWidth/2,cy=innerHeight/2;
+addEventListener('mousemove',e=>{cx=e.clientX;cy=e.clientY;cursor.style.transform=`translate(${cx}px,${cy}px)`;});
+addEventListener('mousedown',()=>cursor.classList.add('click'));
+addEventListener('mouseup',()=>cursor.classList.remove('click'));
+
+/* ── CLICK BURST ───────────────────────────────── */
+addEventListener('click',e=>{
+  for(let i=0;i<4;i++){
     const s=document.createElement('div');
-    s.className='star';
-    s.style.left=Math.random()*100+'%';
-    s.style.top=Math.random()*100+'%';
-    s.style.setProperty('--dur',(2+Math.random()*3)+'s');
-    s.style.setProperty('--delay',(Math.random()*3)+'s');
-    hero.appendChild(s);
+    s.className='burst';s.textContent='✦';
+    s.style.left=e.clientX+(Math.random()*30-15)+'px';
+    s.style.top=e.clientY+(Math.random()*20-10)+'px';
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),600);
+  }
+});
+
+/* ── TITLE / PRESS START (shuffle) ─────────────── */
+const titleEl=document.getElementById('title');
+const deck=document.getElementById('deck');
+const SUITS=['♠','♥','♦','♣','🎭','★'];
+function buildDeck(){
+  for(let i=0;i<10;i++){
+    const c=document.createElement('div');
+    c.className='s-card';c.textContent=SUITS[i%SUITS.length];
+    c.style.setProperty('--tx',(Math.random()*360-180)+'px');
+    c.style.setProperty('--ty',(Math.random()*220-110)+'px');
+    c.style.setProperty('--rot',(Math.random()*540-270)+'deg');
+    c.style.animationDelay=(Math.random()*.4)+'s';
+    deck.appendChild(c);
   }
 }
-
-/* ── XP SYSTEM ─────────────────────────────────────── */
-let xp=0;
-const xpEl=document.getElementById('xp-counter');
-const xpPopup=document.getElementById('xp-popup');
-let popupTimer;
-
-function addXP(amount,label){
-  xp=Math.min(1000,xp+amount);
-  xpEl.textContent=xp;
-  xpPopup.textContent=`+${amount} XP — ${label}`;
-  xpPopup.classList.add('show');
-  clearTimeout(popupTimer);
-  popupTimer=setTimeout(()=>xpPopup.classList.remove('show'),2000);
-}
-
-/* ── INTRO SEQUENCE ─────────────────────────────────── */
 function startGame(){
-  const btn=document.getElementById('start-btn');
-  const bar=document.getElementById('load-bar-wrap');
-  const barFill=document.getElementById('load-bar');
-  btn.style.display='none';
-  bar.style.display='block';
-  let w=0;
-  const iv=setInterval(()=>{
-    w+=Math.random()*8+2;
-    barFill.style.width=Math.min(w,100)+'%';
-    if(w>=100){
-      clearInterval(iv);
-      setTimeout(launchGame,300);
-    }
-  },60);
-}
-
-function launchGame(){
-  document.getElementById('intro').style.transition='opacity 0.6s';
-  document.getElementById('intro').style.opacity='0';
+  buildDeck();
+  titleEl.classList.add('shuffling');
+  document.getElementById('press-start').style.display='none';
   setTimeout(()=>{
-    document.getElementById('intro').style.display='none';
-    // Show everything
-    document.getElementById('hud').style.display='flex';
-    document.getElementById('minimap').style.display='flex';
-    document.getElementById('footer').style.display='block';
-    ['hero','about','skills','projects','story','contact'].forEach(id=>{
-      document.getElementById(id).style.display = id==='hero' ? 'flex' : 'block';
-    });
-    makeStars();
-    initScrollEffects();
-    addXP(100,'GAME STARTED');
-  },600);
+    titleEl.style.transition='opacity .5s';titleEl.style.opacity='0';
+    setTimeout(()=>{
+      titleEl.style.display='none';
+      document.getElementById('app').style.display='block';
+      initReveals();animateBars();
+      toast('TAKE YOUR TIME','THE HEIST BEGINS');
+    },500);
+  },1300);
 }
+document.getElementById('press-start').addEventListener('click',startGame);
+addEventListener('keydown',e=>{
+  if(titleEl.style.display!=='none' && (e.key==='Enter'||e.key===' ')){e.preventDefault();startGame();}
+});
 
-/* ── SCROLL EFFECTS ─────────────────────────────────── */
-const sections=['hero','about','skills','projects','story','contact'];
-const dots=document.querySelectorAll('.mm-dot');
-const xpGiven=new Set();
+/* ── SIDE MENU ─────────────────────────────────── */
+const sideMenu=document.getElementById('side-menu');
+document.getElementById('menu-toggle').addEventListener('click',()=>sideMenu.classList.toggle('open'));
+document.getElementById('menu-close').addEventListener('click',()=>sideMenu.classList.remove('open'));
+document.querySelectorAll('.menu-link').forEach(a=>a.addEventListener('click',()=>sideMenu.classList.remove('open')));
 
-function initScrollEffects(){
-  const fades=document.querySelectorAll('.fade-in');
-  const bars=document.querySelectorAll('.xp-bar');
-
-  const obs=new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting){
-        e.target.classList.add('visible');
-        // Animate XP bars
-        if(e.target.classList.contains('xp-bar')){
-          const w=e.target.dataset.width;
-          setTimeout(()=>{e.target.style.width=w+'%'},200);
-        }
-      }
-    });
-  },{threshold:0.15});
-
-  fades.forEach(f=>obs.observe(f));
-  bars.forEach(b=>obs.observe(b));
-
-  // Section tracker for minimap + XP
-  const secObs=new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting){
-        const idx=sections.indexOf(e.target.id);
-        if(idx>=0){
-          dots.forEach((d,i)=>d.classList.toggle('active',i===idx));
-          if(!xpGiven.has(e.target.id)){
-            xpGiven.add(e.target.id);
-            const labels={
-              about:'PLAYER STATS READ',
-              skills:'SKILL TREE UNLOCKED',
-              projects:'QUEST BOARD ACCESSED',
-              story:'ORIGIN STORY REVEALED',
-              contact:'FINAL ROOM REACHED'
-            };
-            if(labels[e.target.id]) addXP(50, labels[e.target.id]);
-          }
-        }
-      }
-    });
-  },{threshold:0.3});
-
-  sections.forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) secObs.observe(el);
+/* ── CARD CLICK (open repo, ignore inner links) ── */
+document.querySelectorAll('.card').forEach(card=>{
+  card.addEventListener('click',e=>{
+    if(e.target.closest('[data-stop]'))return;
+    const url=card.dataset.link;if(url)window.open(url,'_blank','noopener');
   });
+});
+
+/* ── REVEAL ON SCROLL ──────────────────────────── */
+function initReveals(){
+  const obs=new IntersectionObserver(es=>{
+    es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');obs.unobserve(en.target);}});
+  },{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+}
+function animateBars(){
+  const obs=new IntersectionObserver(es=>{
+    es.forEach(en=>{
+      if(en.isIntersecting){
+        const bar=en.target.querySelector('i[data-w]');
+        if(bar)setTimeout(()=>bar.style.width=bar.dataset.w+'%',150);
+        obs.unobserve(en.target);
+      }
+    });
+  },{threshold:.3});
+  document.querySelectorAll('.arcana').forEach(el=>obs.observe(el));
 }
 
-/* ── KONAMI CODE EASTER EGG ─────────────────────────── */
-const konami=[38,38,40,40,37,39,37,39,66,65];
-let ki=0;
-document.addEventListener('keydown',e=>{
-  if(e.keyCode===konami[ki]){ki++;if(ki===konami.length){easterEgg();ki=0;}}else ki=0;
-});
-function easterEgg(){
-  document.body.style.filter='hue-rotate(180deg)';
-  addXP(200,'🎮 KONAMI CODE ACTIVATED!!');
-  setTimeout(()=>{document.body.style.filter=''},3000);
+/* ── TOAST ─────────────────────────────────────── */
+const toastEl=document.getElementById('toast')||(()=>{const t=document.createElement('div');t.id='toast';document.body.appendChild(t);return t;})();
+let toastTimer;
+function toast(title,sub){
+  toastEl.innerHTML=`<b>${title}</b><b style="font-family:var(--cond);font-weight:600;font-size:11px;opacity:.85">${sub||''}</b>`;
+  toastEl.classList.add('show');clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>toastEl.classList.remove('show'),2400);
 }
 
-/* ── CURSOR SPARKLE ─────────────────────────────────── */
-document.addEventListener('click',e=>{
-  const spark=document.createElement('div');
-  spark.textContent='✦';
-  spark.style.cssText=`
-    position:fixed;left:${e.clientX}px;top:${e.clientY}px;
-    font-family:var(--pixel,monospace);font-size:14px;
-    color:#FFD700;pointer-events:none;z-index:9998;
-    animation:sparkle-fly 0.6s ease-out forwards;
-  `;
-  document.body.appendChild(spark);
-  setTimeout(()=>spark.remove(),600);
-});
-const sparkStyle=document.createElement('style');
-sparkStyle.textContent=`
-  @keyframes sparkle-fly{
-    from{opacity:1;transform:translate(-50%,-50%) scale(1)}
-    to{opacity:0;transform:translate(-50%,-120%) scale(0.5)}
+/* ══════════════════════════════════════════════════
+   BATTLE SYSTEM
+═══════════════════════════════════════════════════ */
+const battle=document.getElementById('battle');
+const enemyEl=document.getElementById('enemy');
+const enemyHpEl=document.getElementById('enemy-hp');
+const enemyHpText=document.getElementById('enemy-hp-text');
+const banner=document.getElementById('b-banner');
+const cmdMenu=document.getElementById('cmd-menu');
+const resultEl=document.getElementById('result');
+const ENEMY_MAX=120, P_HP_MAX=80, P_SP_MAX=40;
+let bState=null;
+
+function openBattle(){
+  if(battle.classList.contains('on'))return;
+  bState={ehp:ENEMY_MAX,php:P_HP_MAX,psp:P_SP_MAX,down:false,guard:false,locked:false,aoa:false};
+  resultEl.classList.remove('show');
+  enemyEl.classList.remove('down','hit');
+  renderBattle();buildCmds();
+  battle.classList.add('on');
+  showBanner('SHADOW APPEARS!');
+}
+function closeBattle(){battle.classList.remove('on');resultEl.classList.remove('show');}
+
+function renderBattle(){
+  enemyHpEl.style.width=Math.max(0,bState.ehp/ENEMY_MAX*100)+'%';
+  enemyHpText.textContent=`HP ${Math.max(0,bState.ehp)} / ${ENEMY_MAX}`;
+  document.getElementById('p-hp').style.width=Math.max(0,bState.php/P_HP_MAX*100)+'%';
+  document.getElementById('p-sp').style.width=Math.max(0,bState.psp/P_SP_MAX*100)+'%';
+  document.getElementById('p-hp-label').textContent=`HP ${Math.max(0,bState.php)} / ${P_HP_MAX}`;
+  document.getElementById('p-sp-label').textContent=`SP ${Math.max(0,bState.psp)} / ${P_SP_MAX}`;
+}
+
+function buildCmds(){
+  if(bState.aoa){
+    cmdMenu.innerHTML='<button class="cmd aoa" data-act="aoa"><span>★ ALL-OUT ATTACK</span><small>finish it!</small></button>';
+  }else{
+    cmdMenu.innerHTML=`
+      <button class="cmd" data-act="attack"><span>ATTACK</span><small>melee</small></button>
+      <button class="cmd" data-act="skill"><span>AGILAO 🔥</span><small>12 SP · weakness</small></button>
+      <button class="cmd" data-act="gun"><span>GUN</span><small>3 ammo</small></button>
+      <button class="cmd" data-act="guard"><span>GUARD</span><small>heal + brace</small></button>`;
   }
-`;
-document.head.appendChild(sparkStyle);
+  cmdMenu.querySelectorAll('.cmd').forEach(b=>b.addEventListener('click',()=>playerAct(b.dataset.act)));
+}
+
+function rand(a,b){return Math.floor(a+Math.random()*(b-a+1));}
+function dmgNumber(weak,val){
+  const d=document.createElement('div');
+  d.className='dmg'+(weak?' weak':'');d.textContent=weak?val+'!':val;
+  d.style.left=(45+Math.random()*10)+'%';d.style.top='28%';
+  battle.appendChild(d);setTimeout(()=>d.remove(),800);
+}
+function showBanner(txt){banner.textContent=txt;banner.classList.remove('show');void banner.offsetWidth;banner.classList.add('show');}
+
+function playerAct(act){
+  if(bState.locked)return;
+  if(act==='aoa'){allOutAttack();return;}
+  bState.locked=true;bState.guard=false;
+  let dmg=0,weak=false,msg='';
+
+  if(act==='attack'){dmg=rand(12,20);msg='SLASH!';}
+  else if(act==='gun'){dmg=rand(10,18);msg='BANG BANG!';}
+  else if(act==='skill'){
+    if(bState.psp<12){toast('NOT ENOUGH SP','guard to recover');bState.locked=false;return;}
+    bState.psp-=12;dmg=rand(26,40);weak=true;msg='WEAK! 🔥';
+  }
+  else if(act==='guard'){
+    bState.guard=true;bState.php=Math.min(P_HP_MAX,bState.php+12);bState.psp=Math.min(P_SP_MAX,bState.psp+10);
+    renderBattle();showBanner('GUARD — RECOVER');
+    setTimeout(enemyTurn,700);return;
+  }
+
+  bState.ehp-=dmg;
+  enemyEl.classList.add('hit');setTimeout(()=>enemyEl.classList.remove('hit'),320);
+  dmgNumber(weak,dmg);showBanner(msg);renderBattle();
+
+  if(bState.ehp<=0){setTimeout(triggerAOA,650);return;}
+  if(weak && !bState.down){
+    bState.down=true;enemyEl.classList.add('down');
+    setTimeout(()=>{showBanner('1 MORE! KNOCKED DOWN');toast('KNOCK DOWN','press ALL-OUT ATTACK');triggerAOAOption();},650);
+    return;
+  }
+  setTimeout(enemyTurn,800);
+}
+
+function triggerAOAOption(){bState.aoa=true;bState.locked=false;buildCmds();}
+function triggerAOA(){bState.aoa=true;bState.locked=false;enemyEl.classList.add('down');buildCmds();showBanner('FINISH IT!');}
+
+function enemyTurn(){
+  bState.down=false;enemyEl.classList.remove('down');
+  let dmg=rand(6,14);if(bState.guard)dmg=Math.floor(dmg/2);
+  bState.php-=dmg;showBanner('SHADOW STRIKES! -'+dmg);renderBattle();
+  if(bState.php<=0){bState.php=8;renderBattle();toast('CLOSE CALL','you held on!');}
+  bState.locked=false;
+}
+
+function allOutAttack(){
+  bState.locked=true;
+  showBanner('ALL-OUT ATTACK!!');
+  enemyEl.style.transition='transform .3s';enemyEl.style.transform='scale(0) rotate(720deg)';
+  setTimeout(()=>{
+    document.getElementById('r-exp').textContent='+'+rand(8000,9999);
+    document.getElementById('r-money').textContent='¥'+rand(5,9)+',777';
+    resultEl.classList.add('show');
+  },700);
+}
+
+/* triggers: mask button, result close, quit */
+document.getElementById('mask-btn').addEventListener('click',openBattle);
+document.getElementById('battle-quit').addEventListener('click',closeBattle);
+document.getElementById('result-close').addEventListener('click',()=>{closeBattle();enemyEl.style.transform='';toast('+OFFER LETTER','quest complete ✦');});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&battle.classList.contains('on'))closeBattle();});
+
+/* ── KONAMI → BATTLE ───────────────────────────── */
+const konami=[38,38,40,40,37,39,37,39,66,65];let ki=0;
+addEventListener('keydown',e=>{
+  if(e.keyCode===konami[ki]){ki++;if(ki===konami.length){ki=0;if(document.getElementById('app').style.display!=='none')openBattle();}}
+  else ki=(e.keyCode===konami[0])?1:0;
+});
 </script>
 </body>
 </html>
