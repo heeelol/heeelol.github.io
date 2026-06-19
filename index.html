@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Yap Jia Wei — Portfolio Quest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet"/>
+<style>
+/* ─── RESET & BASE ─────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --void:#0F0F1A;
+  --floor:#1A1A2E;
+  --wall:#16213E;
+  --crimson:#E94560;
+  --blue:#0F3460;
+  --gold:#FFD700;
+  --green:#57FF8C;
+  --white:#E8E8F0;
+  --muted:#8888AA;
+  --pixel: 'Press Start 2P', monospace;
+  --term: 'VT323', monospace;
+}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{
+  background:var(--void);
+  color:var(--white);
+  font-family:var(--term);
+  font-size:18px;
+  line-height:1.6;
+  cursor:default;
+}
+::selection{background:var(--crimson);color:#fff}
+
+/* ─── SCANLINES OVERLAY ─────────────────────────────────────── */
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background:repeating-linear-gradient(
+    0deg,
+    transparent,transparent 2px,
+    rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 4px
+  );
+  pointer-events:none;z-index:9999;
+}
+
+/* ─── INTRO SCREEN ───────────────────────────────────────────── */
+#intro{
+  position:fixed;inset:0;
+  background:var(--void);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  z-index:1000;
+  gap:2rem;
+}
+#intro-logo{
+  font-family:var(--pixel);
+  font-size:clamp(10px,3vw,22px);
+  color:var(--gold);
+  text-align:center;
+  line-height:2;
+  text-shadow:0 0 20px rgba(255,215,0,0.5);
+  animation:glow 2s ease-in-out infinite alternate;
+}
+@keyframes glow{
+  from{text-shadow:0 0 10px rgba(255,215,0,0.4)}
+  to{text-shadow:0 0 30px rgba(255,215,0,0.9),0 0 60px rgba(255,215,0,0.4)}
+}
+#intro-sub{
+  font-family:var(--pixel);
+  font-size:clamp(6px,1.5vw,11px);
+  color:var(--muted);
+  text-align:center;
+  letter-spacing:0.1em;
+}
+#start-btn{
+  font-family:var(--pixel);
+  font-size:clamp(8px,2vw,13px);
+  color:var(--void);
+  background:var(--crimson);
+  border:none;
+  padding:1rem 2.5rem;
+  cursor:pointer;
+  image-rendering:pixelated;
+  clip-path:polygon(4px 0%,calc(100% - 4px) 0%,100% 4px,100% calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,0% calc(100% - 4px),0% 4px);
+  transition:transform 0.1s,background 0.1s;
+  animation:blink-btn 1.2s step-end infinite;
+}
+#start-btn:hover{background:var(--gold);transform:scale(1.05)}
+#start-btn:active{transform:scale(0.97)}
+@keyframes blink-btn{
+  0%,49%{opacity:1}50%,100%{opacity:0.4}
+}
+.intro-pixel{font-size:48px;line-height:1;filter:drop-shadow(0 0 10px var(--gold))}
+
+/* loading bar */
+#load-bar-wrap{
+  width:280px;height:16px;
+  border:2px solid var(--muted);
+  display:none;
+  position:relative;overflow:hidden;
+}
+#load-bar{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--crimson),var(--gold));
+  transition:width 0.05s linear;
+}
+
+/* ─── HUD / HEADER ───────────────────────────────────────────── */
+#hud{
+  position:fixed;top:0;left:0;right:0;
+  background:rgba(15,15,26,0.95);
+  border-bottom:2px solid var(--crimson);
+  padding:0.6rem 2rem;
+  display:flex;align-items:center;justify-content:space-between;
+  z-index:100;
+  backdrop-filter:blur(4px);
+}
+#hud-name{
+  font-family:var(--pixel);
+  font-size:clamp(7px,1.5vw,11px);
+  color:var(--gold);
+}
+#hud-nav{
+  display:flex;gap:1.5rem;
+  list-style:none;
+}
+#hud-nav a{
+  font-family:var(--pixel);
+  font-size:clamp(5px,1vw,9px);
+  color:var(--muted);
+  text-decoration:none;
+  transition:color 0.2s;
+  position:relative;
+}
+#hud-nav a::after{
+  content:'';position:absolute;bottom:-2px;left:0;width:0;height:2px;
+  background:var(--crimson);transition:width 0.2s;
+}
+#hud-nav a:hover{color:var(--white)}
+#hud-nav a:hover::after{width:100%}
+#hud-xp{
+  font-family:var(--pixel);
+  font-size:clamp(5px,1vw,9px);
+  color:var(--green);
+}
+
+/* ─── HERO / WORLD MAP ───────────────────────────────────────── */
+#hero{
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;
+  position:relative;
+  overflow:hidden;
+  padding-top:70px;
+}
+#hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 50%,rgba(15,52,96,0.4) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 40% at 20% 30%,rgba(233,69,96,0.15) 0%,transparent 60%);
+}
+.pixel-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+/* Floating pixel stars */
+.star{
+  position:absolute;
+  width:3px;height:3px;
+  background:var(--white);
+  animation:twinkle var(--dur,3s) ease-in-out infinite var(--delay,0s);
+}
+@keyframes twinkle{
+  0%,100%{opacity:0.1;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.5)}
+}
+
+#hero-content{
+  position:relative;z-index:2;
+  text-align:center;
+  display:flex;flex-direction:column;align-items:center;
+  gap:1.5rem;
+}
+
+/* ─── PIXEL CHARACTER (CSS-DRAWN) ───────────────────────────── */
+#character-wrap{
+  display:flex;flex-direction:column;align-items:center;
+  gap:0;
+  position:relative;
+}
+.char-name-tag{
+  font-family:var(--pixel);
+  font-size:8px;
+  color:var(--gold);
+  background:rgba(0,0,0,0.7);
+  padding:4px 8px;
+  margin-bottom:6px;
+  border:1px solid var(--gold);
+}
+/* The actual pixel art character via box-shadow mosaic */
+#pixel-char{
+  image-rendering:pixelated;
+  width:32px;height:48px;
+  transform:scale(3);
+  transform-origin:top center;
+  margin-bottom:50px;
+  animation:idle-bob 0.8s step-end infinite;
+  position:relative;
+}
+@keyframes idle-bob{
+  0%,100%{transform:scale(3) translateY(0px)}
+  50%{transform:scale(3) translateY(-1px)}
+}
+/* Head */
+#ph{
+  width:16px;height:16px;
+  margin:0 auto;
+  background:
+    /* skin */
+    linear-gradient(var(--skin,#F4A460),var(--skin,#F4A460));
+  position:relative;
+  box-shadow:
+    /* hair row 1 */
+    0px -2px 0 #3B1F0E,
+    2px -2px 0 #3B1F0E,
+    4px -2px 0 #3B1F0E,
+    6px -2px 0 #3B1F0E,
+    8px -2px 0 #3B1F0E,
+    10px -2px 0 #3B1F0E,
+    12px -2px 0 #3B1F0E,
+    14px -2px 0 #3B1F0E,
+    /* hair row 0 */
+    0px -4px 0 #3B1F0E,
+    2px -4px 0 #3B1F0E,
+    4px -4px 0 #3B1F0E,
+    6px -4px 0 #3B1F0E,
+    8px -4px 0 #3B1F0E,
+    10px -4px 0 #3B1F0E,
+    12px -4px 0 #3B1F0E,
+    14px -4px 0 #3B1F0E,
+    /* eyes */
+    4px 6px 0 #1A1A2E,
+    10px 6px 0 #1A1A2E,
+    /* smile */
+    4px 10px 0 #C0704A,
+    6px 12px 0 #C0704A,
+    8px 12px 0 #C0704A,
+    10px 10px 0 #C0704A;
+  image-rendering:pixelated;
+}
+/* Body */
+#pb{
+  width:16px;height:20px;
+  margin:0 auto;
+  background:#E94560;
+  position:relative;
+  box-shadow:
+    /* collar */
+    6px -2px 0 #fff,
+    8px -2px 0 #fff,
+    /* pocket */
+    2px 6px 0 #c73a52,
+    4px 6px 0 #c73a52,
+    2px 8px 0 #c73a52,
+    4px 8px 0 #c73a52;
+}
+/* Legs */
+#pl{
+  width:16px;height:12px;
+  margin:0 auto;
+  background:transparent;
+  position:relative;
+  box-shadow:
+    0px 0px 0 2px #1E3A5F,
+    2px 0px 0 2px #1E3A5F,
+    4px 0px 0 2px #1E3A5F,
+    0px 2px 0 2px #1E3A5F,
+    2px 2px 0 2px #1E3A5F,
+    4px 2px 0 2px #1E3A5F,
+    8px 0px 0 2px #1E3A5F,
+    10px 0px 0 2px #1E3A5F,
+    12px 0px 0 2px #1E3A5F,
+    8px 2px 0 2px #1E3A5F,
+    10px 2px 0 2px #1E3A5F,
+    12px 2px 0 2px #1E3A5F,
+    /* shoes */
+    0px 6px 0 2px #333,
+    2px 6px 0 2px #333,
+    4px 6px 0 2px #333,
+    6px 6px 0 2px #333,
+    8px 6px 0 2px #333,
+    10px 6px 0 2px #333,
+    12px 6px 0 2px #333;
+}
+
+/* ─── DIALOGUE BOX ───────────────────────────────────────────── */
+.dialogue{
+  font-family:var(--pixel);
+  font-size:clamp(6px,1.2vw,9px);
+  background:rgba(15,15,26,0.95);
+  border:2px solid var(--white);
+  border-radius:2px;
+  padding:1rem 1.2rem;
+  max-width:480px;
+  position:relative;
+  text-align:left;
+  line-height:2;
+}
+.dialogue::before{
+  content:'▶ JAI_WEI';
+  display:block;
+  color:var(--gold);
+  margin-bottom:0.5rem;
+  font-size:clamp(5px,1vw,8px);
+}
+.dialogue p{color:var(--white)}
+.dialogue span.em{color:var(--crimson)}
+.dialogue span.acc{color:var(--green)}
+.dialogue span.gold{color:var(--gold)}
+
+/* cursor blink inside dialogue */
+.blink{animation:blink-cur 0.8s step-end infinite}
+@keyframes blink-cur{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+/* ─── SECTIONS / ROOMS ───────────────────────────────────────── */
+.room{
+  padding:6rem 2rem;
+  max-width:1100px;
+  margin:0 auto;
+  position:relative;
+}
+.room-label{
+  font-family:var(--pixel);
+  font-size:clamp(5px,1vw,8px);
+  color:var(--crimson);
+  letter-spacing:0.2em;
+  margin-bottom:0.5rem;
+  display:flex;align-items:center;gap:0.5rem;
+}
+.room-label::before{content:'⚔';font-size:12px}
+.room-title{
+  font-family:var(--pixel);
+  font-size:clamp(12px,3vw,26px);
+  color:var(--gold);
+  margin-bottom:2.5rem;
+  line-height:1.6;
+}
+.room-divider{
+  width:100%;height:2px;
+  background:linear-gradient(90deg,var(--crimson),transparent);
+  margin-bottom:3rem;
+}
+/* Fade-in on scroll */
+.fade-in{
+  opacity:0;
+  transform:translateY(30px);
+  transition:opacity 0.6s ease,transform 0.6s ease;
+}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+
+/* ─── ABOUT ROOM ─────────────────────────────────────────────── */
+#about .about-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2rem;
+}
+@media(max-width:700px){#about .about-grid{grid-template-columns:1fr}}
+.stat-card{
+  background:var(--floor);
+  border:1px solid var(--wall);
+  border-left:3px solid var(--crimson);
+  padding:1.2rem 1.5rem;
+  transition:border-color 0.2s,transform 0.2s;
+}
+.stat-card:hover{border-left-color:var(--gold);transform:translateX(4px)}
+.stat-card h3{
+  font-family:var(--pixel);
+  font-size:clamp(6px,1.2vw,9px);
+  color:var(--gold);
+  margin-bottom:0.6rem;
+}
+.stat-card p{
+  font-family:var(--term);
+  font-size:clamp(14px,2vw,18px);
+  color:var(--white);
+}
+.fun-fact{
+  background:var(--floor);
+  border:1px solid var(--wall);
+  border-top:3px solid var(--green);
+  padding:1.5rem;
+  margin-top:2rem;
+  font-family:var(--pixel);
+  font-size:clamp(6px,1.2vw,9px);
+  color:var(--muted);
+  line-height:2.5;
+}
+.fun-fact span{color:var(--green)}
+
+/* ─── SKILLS ROOM ────────────────────────────────────────────── */
+#skills .skill-tree{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:1.5rem;
+}
+.skill-branch{
+  background:var(--floor);
+  border:1px solid var(--wall);
+  padding:1.5rem;
+  position:relative;
+}
+.skill-branch-title{
+  font-family:var(--pixel);
+  font-size:clamp(6px,1.2vw,9px);
+  color:var(--crimson);
+  margin-bottom:1rem;
+  display:flex;align-items:center;gap:0.5rem;
+}
+.skill-tag{
+  display:inline-block;
+  font-family:var(--pixel);
+  font-size:clamp(5px,1vw,8px);
+  padding:4px 10px;
+  margin:3px;
+  border:1px solid var(--muted);
+  color:var(--muted);
+  cursor:default;
+  transition:all 0.15s;
+}
+.skill-tag:hover{
+  border-color:var(--green);
+  color:var(--green);
+  background:rgba(87,255,140,0.05);
+  transform:translateY(-2px);
+}
+.skill-tag.hot{border-color:var(--crimson);color:var(--crimson)}
+.skill-tag.hot:hover{background:rgba(233,69,96,0.08)}
+
+/* XP bar */
+.xp-bar-wrap{
+  height:8px;
+  background:var(--wall);
+  margin-top:1rem;
+  position:relative;
+  overflow:visible;
+}
+.xp-bar{
+  height:100%;
+  background:linear-gradient(90deg,var(--crimson),var(--gold));
+  width:0%;
+  transition:width 1.2s cubic-bezier(0.23,1,0.32,1);
+}
+.xp-label{
+  font-family:var(--pixel);
+  font-size:6px;
+  color:var(--muted);
+  position:absolute;
+  right:0;top:-16px;
+}
+
+/* ─── PROJECTS ROOM ──────────────────────────────────────────── */
+#projects .quest-board{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:2rem;
+}
+.quest-card{
+  background:var(--floor);
+  border:1px solid var(--wall);
+  padding:0;
+  position:relative;
+  overflow:hidden;
+  transition:transform 0.2s,box-shadow 0.2s;
+  cursor:pointer;
+}
+.quest-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 12px 40px rgba(233,69,96,0.25);
+}
+.quest-card:hover .quest-header{background:var(--crimson)}
+.quest-header{
+  background:var(--wall);
+  padding:1rem 1.2rem;
+  font-family:var(--pixel);
+  font-size:clamp(6px,1.2vw,9px);
+  color:var(--white);
+  transition:background 0.2s;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.quest-rank{
+  font-size:clamp(5px,1vw,8px);
+  color:var(--gold);
+}
+.quest-body{padding:1.2rem}
+.quest-desc{
+  font-family:var(--term);
+  font-size:clamp(15px,2vw,18px);
+  color:var(--muted);
+  margin-bottom:1rem;
+  line-height:1.5;
+}
+.quest-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.q-tag{
+  font-family:var(--pixel);
+  font-size:5px;
+  padding:3px 8px;
+  background:rgba(15,52,96,0.6);
+  border:1px solid var(--blue);
+  color:var(--white);
+}
+.quest-reward{
+  font-family:var(--pixel);
+  font-size:6px;
+  color:var(--gold);
+  border-top:1px solid var(--wall);
+  padding-top:0.8rem;
+  margin-top:0.5rem;
+}
+.quest-link{
+  display:inline-block;
+  margin-top:0.8rem;
+  font-family:var(--pixel);
+  font-size:6px;
+  color:var(--crimson);
+  text-decoration:none;
+  border:1px solid var(--crimson);
+  padding:4px 10px;
+  transition:all 0.15s;
+}
+.quest-link:hover{background:var(--crimson);color:#fff}
+.badge-hackathon{
+  position:absolute;top:0;right:0;
+  background:var(--gold);
+  color:var(--void);
+  font-family:var(--pixel);
+  font-size:5px;
+  padding:4px 8px;
+  clip-path:polygon(0 0,100% 0,100% 100%,8px 100%);
+}
+
+/* ─── TIMELINE ───────────────────────────────────────────────── */
+#story .timeline{
+  position:relative;
+  padding-left:2rem;
+}
+#story .timeline::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:2px;
+  background:linear-gradient(180deg,var(--crimson),transparent);
+}
+.tl-item{
+  position:relative;
+  margin-bottom:2.5rem;
+  padding-left:1.5rem;
+}
+.tl-item::before{
+  content:'◆';
+  position:absolute;left:-1.75rem;top:0;
+  font-size:12px;color:var(--crimson);
+}
+.tl-year{
+  font-family:var(--pixel);
+  font-size:clamp(5px,1vw,8px);
+  color:var(--gold);
+  margin-bottom:0.3rem;
+}
+.tl-title{
+  font-family:var(--pixel);
+  font-size:clamp(7px,1.2vw,11px);
+  color:var(--white);
+  margin-bottom:0.4rem;
+}
+.tl-desc{
+  font-family:var(--term);
+  font-size:clamp(16px,2vw,20px);
+  color:var(--muted);
+}
+
+/* ─── CONTACT ROOM ───────────────────────────────────────────── */
+#contact .contact-box{
+  background:var(--floor);
+  border:2px solid var(--crimson);
+  padding:3rem;
+  text-align:center;
+  max-width:600px;
+  margin:0 auto;
+  position:relative;
+}
+.contact-box::before{
+  content:'[ SEND MESSAGE ]';
+  position:absolute;top:-13px;left:50%;transform:translateX(-50%);
+  background:var(--void);padding:0 1rem;
+  font-family:var(--pixel);font-size:8px;color:var(--crimson);
+}
+.contact-link{
+  display:flex;align-items:center;gap:1rem;
+  font-family:var(--pixel);font-size:clamp(6px,1.2vw,9px);
+  color:var(--muted);
+  text-decoration:none;
+  padding:1rem;
+  border:1px solid var(--wall);
+  margin-bottom:1rem;
+  transition:all 0.15s;
+}
+.contact-link:hover{color:var(--white);border-color:var(--crimson);background:rgba(233,69,96,0.06)}
+.contact-link .cl-icon{font-size:20px;color:var(--gold)}
+.avail-badge{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  font-family:var(--pixel);font-size:8px;
+  color:var(--green);
+  margin-bottom:2rem;
+}
+.avail-dot{
+  width:10px;height:10px;
+  border-radius:50%;background:var(--green);
+  animation:pulse-dot 1.5s ease-in-out infinite;
+}
+@keyframes pulse-dot{
+  0%,100%{box-shadow:0 0 0 0 rgba(87,255,140,0.6)}
+  50%{box-shadow:0 0 0 6px rgba(87,255,140,0)}
+}
+
+/* ─── FLOATING XP POPUP ──────────────────────────────────────── */
+#xp-popup{
+  position:fixed;
+  right:2rem;bottom:2rem;
+  background:var(--floor);
+  border:2px solid var(--gold);
+  padding:0.8rem 1.2rem;
+  font-family:var(--pixel);font-size:9px;color:var(--gold);
+  z-index:200;
+  opacity:0;
+  transform:translateY(20px);
+  transition:all 0.4s;
+  pointer-events:none;
+}
+#xp-popup.show{opacity:1;transform:translateY(0)}
+
+/* ─── MINI MAP ───────────────────────────────────────────────── */
+#minimap{
+  position:fixed;right:2rem;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:6px;
+  z-index:200;
+}
+.mm-dot{
+  width:8px;height:8px;
+  background:var(--muted);
+  cursor:pointer;
+  transition:all 0.2s;
+  clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);
+}
+.mm-dot.active{background:var(--crimson);transform:scale(1.4)}
+.mm-dot:hover{background:var(--gold)}
+
+/* ─── FOOTER ─────────────────────────────────────────────────── */
+footer{
+  text-align:center;
+  padding:3rem;
+  font-family:var(--pixel);
+  font-size:7px;
+  color:var(--muted);
+  border-top:1px solid var(--wall);
+}
+footer span{color:var(--crimson)}
+
+/* ─── SCROLLBAR ──────────────────────────────────────────────── */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--void)}
+::-webkit-scrollbar-thumb{background:var(--crimson)}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────── */
+@media(max-width:600px){
+  #hud-nav{display:none}
+  #minimap{display:none}
+  .contact-box{padding:1.5rem}
+  .room{padding:4rem 1rem}
+}
+
+/* ─── TYPING ANIMATION ───────────────────────────────────────── */
+.typewriter{overflow:hidden;white-space:nowrap;border-right:.15em solid var(--crimson)}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     INTRO / TITLE SCREEN
+═══════════════════════════════════════════════════════════════ -->
+<div id="intro">
+  <div class="intro-pixel">🗡️</div>
+  <div id="intro-logo">
+    PORTFOLIO QUEST<br/>
+    ════════════════<br/>
+    YAP JIA WEI
+  </div>
+  <div id="intro-sub">
+    NUS COMPUTER ENGINEERING · YEAR 2<br/>
+    ─── PRESS START TO BEGIN ───
+  </div>
+  <button id="start-btn" onclick="startGame()">► PRESS START</button>
+  <div id="load-bar-wrap"><div id="load-bar"></div></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     HUD
+═══════════════════════════════════════════════════════════════ -->
+<div id="hud" style="display:none">
+  <div id="hud-name">⚔ JIA WEI · LVL 20</div>
+  <ul id="hud-nav">
+    <li><a href="#about">ABOUT</a></li>
+    <li><a href="#skills">SKILLS</a></li>
+    <li><a href="#projects">QUESTS</a></li>
+    <li><a href="#story">STORY</a></li>
+    <li><a href="#contact">CONTACT</a></li>
+  </ul>
+  <div id="hud-xp">XP: <span id="xp-counter">0</span>/1000</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     MINI MAP
+═══════════════════════════════════════════════════════════════ -->
+<div id="minimap" style="display:none">
+  <div class="mm-dot active" onclick="location.href='#hero'" title="HOME"></div>
+  <div class="mm-dot" onclick="location.href='#about'" title="ABOUT"></div>
+  <div class="mm-dot" onclick="location.href='#skills'" title="SKILLS"></div>
+  <div class="mm-dot" onclick="location.href='#projects'" title="QUESTS"></div>
+  <div class="mm-dot" onclick="location.href='#story'" title="STORY"></div>
+  <div class="mm-dot" onclick="location.href='#contact'" title="CONTACT"></div>
+</div>
+
+<!-- XP popup -->
+<div id="xp-popup">+50 XP — NEW AREA UNLOCKED!</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════════════════ -->
+<section id="hero" style="display:none">
+  <div id="hero-bg"></div>
+  <div class="pixel-grid"></div>
+
+  <div id="hero-content">
+    <div id="character-wrap">
+      <div class="char-name-tag">JAI_WEI ❤❤❤❤❤</div>
+      <div id="pixel-char">
+        <div id="ph"></div>
+        <div id="pb"></div>
+        <div id="pl"></div>
+      </div>
+    </div>
+
+    <div class="dialogue fade-in">
+      <p>Hey! I'm <span class="em">Jia Wei</span> — CE undergrad at <span class="gold">NUS</span>.<br/>
+      I build <span class="acc">real-time apps</span>, <span class="em">ML systems</span>, and once programmed a robot to shoot ping-pong balls autonomously. True story.<br/><br/>
+      Scroll down to explore my world. ↓<span class="blink">█</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     ABOUT
+═══════════════════════════════════════════════════════════════ -->
+<section id="about" style="display:none">
+  <div class="room">
+    <div class="room-label fade-in">ZONE 01 — PLAYER INFO</div>
+    <div class="room-title fade-in">Character Stats</div>
+    <div class="room-divider"></div>
+
+    <div class="about-grid fade-in">
+      <div class="stat-card">
+        <h3>🎓 CLASS</h3>
+        <p>Computer Engineering, NUS<br/>Year 2 · 2023–2027</p>
+      </div>
+      <div class="stat-card">
+        <h3>📍 LOCATION</h3>
+        <p>Singapore 🇸🇬<br/>Available for internships</p>
+      </div>
+      <div class="stat-card">
+        <h3>⚔ MAIN ROLE</h3>
+        <p>Full-Stack Developer<br/>+ ML Engineer</p>
+      </div>
+      <div class="stat-card">
+        <h3>🏆 ACHIEVEMENTS</h3>
+        <p>Hackathon Semifinalist<br/>NUS Orbital Apollo 11</p>
+      </div>
+    </div>
+
+    <div class="fun-fact fade-in">
+      ▶ FUN FACTS<br/>
+      <span>▸</span> I named my GitHub heeelol — yes, on purpose.<br/>
+      <span>▸</span> My robot scored direct hits from 2m away on the first real run.<br/>
+      <span>▸</span> I once debugged a Socket.IO race condition at 3AM and felt great about it.<br/>
+      <span>▸</span> I think good READMEs are an underrated form of art.
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SKILLS
+═══════════════════════════════════════════════════════════════ -->
+<section id="skills" style="display:none">
+  <div class="room">
+    <div class="room-label fade-in">ZONE 02 — ABILITY TREE</div>
+    <div class="room-title fade-in">Skill Loadout</div>
+    <div class="room-divider"></div>
+
+    <div class="skill-tree fade-in">
+
+      <div class="skill-branch">
+        <div class="skill-branch-title">⚡ Languages</div>
+        <div>
+          <span class="skill-tag hot">Python</span>
+          <span class="skill-tag hot">JavaScript</span>
+          <span class="skill-tag">Java</span>
+          <span class="skill-tag">C++</span>
+          <span class="skill-tag">TypeScript</span>
+        </div>
+        <div class="xp-bar-wrap">
+          <div class="xp-label">PROFICIENCY</div>
+          <div class="xp-bar" data-width="85"></div>
+        </div>
+      </div>
+
+      <div class="skill-branch">
+        <div class="skill-branch-title">🖥 Frontend</div>
+        <div>
+          <span class="skill-tag hot">React</span>
+          <span class="skill-tag hot">TailwindCSS</span>
+          <span class="skill-tag">Vite</span>
+          <span class="skill-tag">HTML/CSS</span>
+          <span class="skill-tag">Recharts</span>
+        </div>
+        <div class="xp-bar-wrap">
+          <div class="xp-label">PROFICIENCY</div>
+          <div class="xp-bar" data-width="80"></div>
+        </div>
+      </div>
+
+      <div class="skill-branch">
+        <div class="skill-branch-title">⚙ Backend</div>
+        <div>
+          <span class="skill-tag hot">Node.js</span>
+          <span class="skill-tag hot">Express</span>
+          <span class="skill-tag hot">Socket.IO</span>
+          <span class="skill-tag">FastAPI</span>
+          <span class="skill-tag">REST APIs</span>
+          <span class="skill-tag">JWT Auth</span>
+        </div>
+        <div class="xp-bar-wrap">
+          <div class="xp-label">PROFICIENCY</div>
+          <div class="xp-bar" data-width="78"></div>
+        </div>
+      </div>
+
+      <div class="skill-branch">
+        <div class="skill-branch-title">🗄 Data & ML</div>
+        <div>
+          <span class="skill-tag hot">scikit-learn</span>
+          <span class="skill-tag">Pandas</span>
+          <span class="skill-tag">NumPy</span>
+          <span class="skill-tag">Jupyter</span>
+          <span class="skill-tag">LLM Integration</span>
+          <span class="skill-tag">NLP</span>
+        </div>
+        <div class="xp-bar-wrap">
+          <div class="xp-label">PROFICIENCY</div>
+          <div class="xp-bar" data-width="72"></div>
+        </div>
+      </div>
+
+      <div class="skill-branch">
+        <div class="skill-branch-title">🤖 Robotics</div>
+        <div>
+          <span class="skill-tag hot">ROS2</span>
+          <span class="skill-tag">OpenCV</span>
+          <span class="skill-tag">LiDAR / SLAM</span>
+          <span class="skill-tag">Raspberry Pi</span>
+          <span class="skill-tag">ArUco</span>
+        </div>
+        <div class="xp-bar-wrap">
+          <div class="xp-label">PROFICIENCY</div>
+          <div class="xp-bar" data-width="65"></div>
+        </div>
+      </div>
+
+      <div class="skill-branch">
+        <div class="skill-branch-title">🛠 Tools & Infra</div>
+        <div>
+          <span class="skill-tag">MongoDB</span>
+          <span class="skill-tag">Git</span>
+          <span class="skill-tag">GitHub Actions</span>
+          <span class="skill-tag">AWS</span>
+          <span class="skill-tag">Vercel</span>
+          <span class="skill-tag">Figma</span>
+        </div>
+        <div class="xp-bar-wrap">
+          <div class="xp-label">PROFICIENCY</div>
+          <div class="xp-bar" data-width="75"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     PROJECTS / QUEST BOARD
+═══════════════════════════════════════════════════════════════ -->
+<section id="projects" style="display:none">
+  <div class="room">
+    <div class="room-label fade-in">ZONE 03 — QUEST BOARD</div>
+    <div class="room-title fade-in">Completed Quests</div>
+    <div class="room-divider"></div>
+
+    <div class="quest-board fade-in">
+
+      <!-- BrainBrawl -->
+      <div class="quest-card" onclick="window.open('https://github.com/heeelol/BrainBrawl','_blank')">
+        <div class="quest-header">
+          🎮 BRAINBRAWL
+          <span class="quest-rank">★★★ EPIC</span>
+        </div>
+        <div class="quest-body">
+          <p class="quest-desc">Real-time 1v1 quiz battle platform. MERN stack with Socket.IO multiplayer, XP system, global leaderboard, and a cosmetic shop. NUS Orbital Apollo 11 achievement.</p>
+          <div class="quest-tags">
+            <span class="q-tag">React</span>
+            <span class="q-tag">Node.js</span>
+            <span class="q-tag">MongoDB</span>
+            <span class="q-tag">Socket.IO</span>
+            <span class="q-tag">Cypress</span>
+            <span class="q-tag">JWT</span>
+            <span class="q-tag">Vercel</span>
+          </div>
+          <div class="quest-reward">🏆 REWARD: Apollo 11 · Live Deployment</div>
+          <a class="quest-link" href="https://brainbrawl-frontend.vercel.app/" onclick="event.stopPropagation()" target="_blank">▶ PLAY LIVE DEMO</a>
+          <a class="quest-link" href="https://github.com/heeelol/BrainBrawl" onclick="event.stopPropagation()" target="_blank">⌥ VIEW CODE</a>
+        </div>
+      </div>
+
+      <!-- Rubrix AI -->
+      <div class="quest-card" onclick="window.open('https://github.com/heeelol/Rubrix-AI','_blank')">
+        <div class="badge-hackathon">🥈 SEMIFINALIST</div>
+        <div class="quest-header">
+          🧠 RUBRIX AI
+          <span class="quest-rank">★★★ EPIC</span>
+        </div>
+        <div class="quest-body">
+          <p class="quest-desc">Agentic AI learning assistant — SimplifyNext Hackathon (AWS Partnership). True agentic loop: PLAN → ACT → ADAPT. Personalised homework generation from uploaded assignments.</p>
+          <div class="quest-tags">
+            <span class="q-tag">Python</span>
+            <span class="q-tag">Node.js</span>
+            <span class="q-tag">LLM</span>
+            <span class="q-tag">AWS</span>
+            <span class="q-tag">React</span>
+            <span class="q-tag">Recharts</span>
+          </div>
+          <div class="quest-reward">🏆 REWARD: Hackathon Semifinalist · AWS Partnership</div>
+          <a class="quest-link" href="https://github.com/heeelol/Rubrix-AI" onclick="event.stopPropagation()" target="_blank">⌥ VIEW CODE</a>
+        </div>
+      </div>
+
+      <!-- F1 Predictor -->
+      <div class="quest-card" onclick="window.open('https://github.com/heeelol/F1-Race-Predictor','_blank')">
+        <div class="quest-header">
+          🏎 F1 RACE PREDICTOR
+          <span class="quest-rank">★★☆ RARE</span>
+        </div>
+        <div class="quest-body">
+          <p class="quest-desc">ML web app predicting F1 finishing positions using Gradient Boosting trained on 10 years of data. FastF1 API backend with real-time qualifying data fetching.</p>
+          <div class="quest-tags">
+            <span class="q-tag">Python</span>
+            <span class="q-tag">scikit-learn</span>
+            <span class="q-tag">FastF1</span>
+            <span class="q-tag">React</span>
+            <span class="q-tag">Vite</span>
+            <span class="q-tag">FastAPI</span>
+          </div>
+          <div class="quest-reward">🏆 REWARD: 2★ GitHub Stars · Video Demo</div>
+          <a class="quest-link" href="https://youtu.be/qfJKhu7rrgY" onclick="event.stopPropagation()" target="_blank">▶ WATCH DEMO</a>
+          <a class="quest-link" href="https://github.com/heeelol/F1-Race-Predictor" onclick="event.stopPropagation()" target="_blank">⌥ VIEW CODE</a>
+        </div>
+      </div>
+
+      <!-- Robot -->
+      <div class="quest-card" onclick="window.open('https://github.com/heeelol/CDE2310_G10_2526','_blank')">
+        <div class="quest-header">
+          🤖 AUTONOMOUS ROBOT
+          <span class="quest-rank">★★★ EPIC</span>
+        </div>
+        <div class="quest-body">
+          <p class="quest-desc">ROS2 robot with LiDAR SLAM, frontier exploration, ArUco marker detection, and a 3D-printed spring-loaded launcher. Deployed physically in a warehouse maze. 363 commits.</p>
+          <div class="quest-tags">
+            <span class="q-tag">ROS2</span>
+            <span class="q-tag">Python</span>
+            <span class="q-tag">C++</span>
+            <span class="q-tag">OpenCV</span>
+            <span class="q-tag">SLAM</span>
+            <span class="q-tag">Raspberry Pi</span>
+          </div>
+          <div class="quest-reward">🏆 REWARD: Physical Robot Deployed · GitHub Pages Docs</div>
+          <a class="quest-link" href="https://kmyming.github.io/CDE2310_G10_2526/" onclick="event.stopPropagation()" target="_blank">▶ VIEW DOCS</a>
+          <a class="quest-link" href="https://github.com/heeelol/CDE2310_G10_2526" onclick="event.stopPropagation()" target="_blank">⌥ VIEW CODE</a>
+        </div>
+      </div>
+
+      <!-- Sift -->
+      <div class="quest-card" onclick="window.open('https://github.com/heeelol/Sift','_blank')">
+        <div class="quest-header">
+          🔍 SIFT — AI REVIEW FILTER
+          <span class="quest-rank">★★☆ RARE</span>
+        </div>
+        <div class="quest-body">
+          <p class="quest-desc">LLM-powered spam review detector. Hybrid TF-IDF + regex + open-source LLM classification pipeline. Scrapes Google Maps, classifies authentic vs. spam in real time.</p>
+          <div class="quest-tags">
+            <span class="q-tag">Python</span>
+            <span class="q-tag">LLM</span>
+            <span class="q-tag">NLP</span>
+            <span class="q-tag">TF-IDF</span>
+            <span class="q-tag">Apify</span>
+            <span class="q-tag">Pandas</span>
+          </div>
+          <div class="quest-reward">🏆 REWARD: Course Top Project · Team APXGP</div>
+          <a class="quest-link" href="https://github.com/heeelol/Sift" onclick="event.stopPropagation()" target="_blank">⌥ VIEW CODE</a>
+        </div>
+      </div>
+
+      <!-- ModuleSync -->
+      <div class="quest-card" onclick="window.open('https://github.com/heeelol/tp','_blank')">
+        <div class="quest-header">
+          📚 MODULESYNC
+          <span class="quest-rank">★★☆ RARE</span>
+        </div>
+        <div class="quest-body">
+          <p class="quest-desc">Java CLI task manager for NUS students. Full OOP design, Gradle automation, Checkstyle enforcement, JUnit + text-UI testing, CI/CD with GitHub Actions. 342 commits.</p>
+          <div class="quest-tags">
+            <span class="q-tag">Java</span>
+            <span class="q-tag">OOP</span>
+            <span class="q-tag">Gradle</span>
+            <span class="q-tag">JUnit</span>
+            <span class="q-tag">GitHub Actions</span>
+          </div>
+          <div class="quest-reward">🏆 REWARD: CS2113 Team Project · Automated CI</div>
+          <a class="quest-link" href="https://github.com/heeelol/tp" onclick="event.stopPropagation()" target="_blank">⌥ VIEW CODE</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     STORY / TIMELINE
+═══════════════════════════════════════════════════════════════ -->
+<section id="story" style="display:none">
+  <div class="room">
+    <div class="room-label fade-in">ZONE 04 — ORIGIN STORY</div>
+    <div class="room-title fade-in">The Journey So Far</div>
+    <div class="room-divider"></div>
+
+    <div class="timeline">
+      <div class="tl-item fade-in">
+        <div class="tl-year">2023</div>
+        <div class="tl-title">⚔ Enrolled at NUS — Computer Engineering</div>
+        <div class="tl-desc">Started the adventure. Wrote my first Java class. Survived the first CS module. Discovered I actually enjoy building things from scratch.</div>
+      </div>
+      <div class="tl-item fade-in">
+        <div class="tl-year">2024 · SEM 1</div>
+        <div class="tl-title">🧠 First Hackathon — Sift (AI Review Filter)</div>
+        <div class="tl-desc">Built a hybrid LLM + TF-IDF review spam detector. Learned that NLP is both fascinating and humbling at the same time.</div>
+      </div>
+      <div class="tl-item fade-in">
+        <div class="tl-year">2024 · SEM 2</div>
+        <div class="tl-title">🏎 F1 Race Predictor — First ML Full-Stack Project</div>
+        <div class="tl-desc">Built a Gradient Boosting model trained on 10 years of F1 data + a React frontend. First time combining ML with a real production UI.</div>
+      </div>
+      <div class="tl-item fade-in">
+        <div class="tl-year">2025 · SUMMER</div>
+        <div class="tl-title">🚀 NUS Orbital — BrainBrawl (Apollo 11)</div>
+        <div class="tl-desc">Three months building a full-stack real-time quiz battle platform with my teammate. Real users, real feedback, live deployment on Vercel. Achieved Apollo 11 — the top tier.</div>
+      </div>
+      <div class="tl-item fade-in">
+        <div class="tl-year">2025 · SEM 1</div>
+        <div class="tl-title">🥈 SimplifyNext Hackathon — Rubrix AI Semifinalist</div>
+        <div class="tl-desc">Built an agentic AI tutoring assistant with AWS in 48 hours. Made it to the semifinals. Learned that agents are only as good as their loops.</div>
+      </div>
+      <div class="tl-item fade-in">
+        <div class="tl-year">2025–2026</div>
+        <div class="tl-title">🤖 CDE2310 — Autonomous Robot Project</div>
+        <div class="tl-desc">Built a physical ROS2 robot from scratch. LiDAR SLAM, frontier mapping, ArUco detection, and a spring-loaded launcher that actually works. 363 commits with a team of 6.</div>
+      </div>
+      <div class="tl-item fade-in">
+        <div class="tl-year">NOW</div>
+        <div class="tl-title">👾 Looking for: Internship (SWE / ML / Fullstack)</div>
+        <div class="tl-desc">Ready to bring this energy to a real team. Open to summer 2026 and beyond. Let's build something cool.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     CONTACT
+═══════════════════════════════════════════════════════════════ -->
+<section id="contact" style="display:none">
+  <div class="room">
+    <div class="room-label fade-in">ZONE 05 — FINAL ROOM</div>
+    <div class="room-title fade-in">Send a Message</div>
+    <div class="room-divider"></div>
+
+    <div class="contact-box fade-in">
+      <div class="avail-badge">
+        <div class="avail-dot"></div>
+        AVAILABLE FOR INTERNSHIPS · 2026
+      </div>
+
+      <a class="contact-link" href="https://www.linkedin.com/in/yap-jia-wei-%E5%8F%B6%E4%BD%B3%E7%82%9C-5186a5348/" target="_blank">
+        <span class="cl-icon">💼</span>
+        LINKEDIN — yap-jia-wei
+      </a>
+      <a class="contact-link" href="https://github.com/heeelol" target="_blank">
+        <span class="cl-icon">🐙</span>
+        GITHUB — heeelol
+      </a>
+      <a class="contact-link" href="mailto:yapjiawei@u.nus.edu" target="_blank">
+        <span class="cl-icon">📬</span>
+        EMAIL — yapjiawei@u.nus.edu
+      </a>
+
+      <p style="font-family:var(--pixel);font-size:7px;color:var(--muted);margin-top:1.5rem;line-height:2.5">
+        I respond fast. I don't ghost. I bring snacks to meetings if remote counts.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════════════ -->
+<footer style="display:none" id="footer">
+  <p>BUILT WITH <span>♥</span> AND TOO MUCH COFFEE BY YAP JIA WEI · 2026</p>
+  <p style="margin-top:0.5rem">NO FRAMEWORKS WERE HARMED IN THE MAKING OF THIS PAGE</p>
+</footer>
+
+<!-- ══════════════════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════════════════════ -->
+<script>
+/* ── STARS ─────────────────────────────────────────── */
+function makeStars(){
+  const hero=document.getElementById('hero');
+  for(let i=0;i<60;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    s.style.left=Math.random()*100+'%';
+    s.style.top=Math.random()*100+'%';
+    s.style.setProperty('--dur',(2+Math.random()*3)+'s');
+    s.style.setProperty('--delay',(Math.random()*3)+'s');
+    hero.appendChild(s);
+  }
+}
+
+/* ── XP SYSTEM ─────────────────────────────────────── */
+let xp=0;
+const xpEl=document.getElementById('xp-counter');
+const xpPopup=document.getElementById('xp-popup');
+let popupTimer;
+
+function addXP(amount,label){
+  xp=Math.min(1000,xp+amount);
+  xpEl.textContent=xp;
+  xpPopup.textContent=`+${amount} XP — ${label}`;
+  xpPopup.classList.add('show');
+  clearTimeout(popupTimer);
+  popupTimer=setTimeout(()=>xpPopup.classList.remove('show'),2000);
+}
+
+/* ── INTRO SEQUENCE ─────────────────────────────────── */
+function startGame(){
+  const btn=document.getElementById('start-btn');
+  const bar=document.getElementById('load-bar-wrap');
+  const barFill=document.getElementById('load-bar');
+  btn.style.display='none';
+  bar.style.display='block';
+  let w=0;
+  const iv=setInterval(()=>{
+    w+=Math.random()*8+2;
+    barFill.style.width=Math.min(w,100)+'%';
+    if(w>=100){
+      clearInterval(iv);
+      setTimeout(launchGame,300);
+    }
+  },60);
+}
+
+function launchGame(){
+  document.getElementById('intro').style.transition='opacity 0.6s';
+  document.getElementById('intro').style.opacity='0';
+  setTimeout(()=>{
+    document.getElementById('intro').style.display='none';
+    // Show everything
+    document.getElementById('hud').style.display='flex';
+    document.getElementById('minimap').style.display='flex';
+    document.getElementById('footer').style.display='block';
+    ['hero','about','skills','projects','story','contact'].forEach(id=>{
+      document.getElementById(id).style.display = id==='hero' ? 'flex' : 'block';
+    });
+    makeStars();
+    initScrollEffects();
+    addXP(100,'GAME STARTED');
+  },600);
+}
+
+/* ── SCROLL EFFECTS ─────────────────────────────────── */
+const sections=['hero','about','skills','projects','story','contact'];
+const dots=document.querySelectorAll('.mm-dot');
+const xpGiven=new Set();
+
+function initScrollEffects(){
+  const fades=document.querySelectorAll('.fade-in');
+  const bars=document.querySelectorAll('.xp-bar');
+
+  const obs=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        // Animate XP bars
+        if(e.target.classList.contains('xp-bar')){
+          const w=e.target.dataset.width;
+          setTimeout(()=>{e.target.style.width=w+'%'},200);
+        }
+      }
+    });
+  },{threshold:0.15});
+
+  fades.forEach(f=>obs.observe(f));
+  bars.forEach(b=>obs.observe(b));
+
+  // Section tracker for minimap + XP
+  const secObs=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const idx=sections.indexOf(e.target.id);
+        if(idx>=0){
+          dots.forEach((d,i)=>d.classList.toggle('active',i===idx));
+          if(!xpGiven.has(e.target.id)){
+            xpGiven.add(e.target.id);
+            const labels={
+              about:'PLAYER STATS READ',
+              skills:'SKILL TREE UNLOCKED',
+              projects:'QUEST BOARD ACCESSED',
+              story:'ORIGIN STORY REVEALED',
+              contact:'FINAL ROOM REACHED'
+            };
+            if(labels[e.target.id]) addXP(50, labels[e.target.id]);
+          }
+        }
+      }
+    });
+  },{threshold:0.3});
+
+  sections.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) secObs.observe(el);
+  });
+}
+
+/* ── KONAMI CODE EASTER EGG ─────────────────────────── */
+const konami=[38,38,40,40,37,39,37,39,66,65];
+let ki=0;
+document.addEventListener('keydown',e=>{
+  if(e.keyCode===konami[ki]){ki++;if(ki===konami.length){easterEgg();ki=0;}}else ki=0;
+});
+function easterEgg(){
+  document.body.style.filter='hue-rotate(180deg)';
+  addXP(200,'🎮 KONAMI CODE ACTIVATED!!');
+  setTimeout(()=>{document.body.style.filter=''},3000);
+}
+
+/* ── CURSOR SPARKLE ─────────────────────────────────── */
+document.addEventListener('click',e=>{
+  const spark=document.createElement('div');
+  spark.textContent='✦';
+  spark.style.cssText=`
+    position:fixed;left:${e.clientX}px;top:${e.clientY}px;
+    font-family:var(--pixel,monospace);font-size:14px;
+    color:#FFD700;pointer-events:none;z-index:9998;
+    animation:sparkle-fly 0.6s ease-out forwards;
+  `;
+  document.body.appendChild(spark);
+  setTimeout(()=>spark.remove(),600);
+});
+const sparkStyle=document.createElement('style');
+sparkStyle.textContent=`
+  @keyframes sparkle-fly{
+    from{opacity:1;transform:translate(-50%,-50%) scale(1)}
+    to{opacity:0;transform:translate(-50%,-120%) scale(0.5)}
+  }
+`;
+document.head.appendChild(sparkStyle);
+</script>
+</body>
+</html>
